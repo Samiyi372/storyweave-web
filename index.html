@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Storyweave — Explore the city, starting with one person's story.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:     #EDEADE;
+      --cream-dark:#E3DCCE;
+      --ink:       #111111;
+      --ink-soft:  #444444;
+      --ink-faint: #888888;
+      --white:     #FFFFFF;
+      --green:     #2F6B4A;
+      --green-pill:#3D7A5B;
+      --accent:    #B8F040;   /* lime — perk-style bright secondary */
+      --border:    rgba(17,17,17,.1);
+      --r-pill:    100px;
+      --r-card:    20px;
+      --max:       1160px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: var(--r-pill);
+      font-family: 'Inter', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: transform .15s, opacity .15s, box-shadow .15s;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn svg { flex-shrink: 0; }
+
+    .btn-dark {
+      background: var(--ink);
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(0,0,0,.18);
+    }
+    .btn-dark:hover { box-shadow: 0 8px 28px rgba(0,0,0,.25); }
+
+    .btn-accent {
+      background: var(--accent);
+      color: var(--ink);
+      box-shadow: 0 4px 16px rgba(184,240,64,.35);
+    }
+    .btn-accent:hover { box-shadow: 0 8px 28px rgba(184,240,64,.45); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { background: rgba(17,17,17,.05); }
+
+    .btn-green {
+      background: var(--green);
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(47,107,74,.25);
+    }
+    .btn-green:hover { box-shadow: 0 8px 28px rgba(47,107,74,.35); }
+
+    /* arrow icon */
+    .arrow {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.18);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-dark .arrow { background: rgba(255,255,255,.2); }
+    .btn-accent .arrow { background: rgba(17,17,17,.1); }
+
+    /* ── Nav ─────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      padding: 0 36px;
+      background: rgba(237,234,222,.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .3s;
+    }
+    nav.scrolled { border-color: var(--border); }
+
+    .nav-logo {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      margin-right: 48px;
+    }
+    .logo-story { color: var(--ink); }
+    .logo-weave { color: var(--green); }
+
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      list-style: none;
+      flex: 1;
+    }
+    .nav-links a {
+      padding: 7px 14px;
+      border-radius: 100px;
+      font-size: .875rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      transition: background .15s, color .15s;
+    }
+    .nav-links a:hover {
+      background: rgba(17,17,17,.06);
+      color: var(--ink);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      margin-left: 8px;
+    }
+    .nav-hamburger span {
+      width: 22px; height: 2px;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+
+    /* ── Hero ────────────────────────────────────────────── */
+    #hero {
+      padding-top: 140px;
+      padding-bottom: 0;
+      text-align: center;
+      overflow: hidden;
+    }
+
+
+    #hero h1 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(3rem, 7.5vw, 7rem);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -.04em;
+      color: var(--ink);
+      max-width: 900px;
+      margin: 0 auto 28px;
+    }
+
+    #hero h1 em {
+      font-style: italic;
+      color: var(--green);
+    }
+
+    .hero-rating {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 36px;
+      font-size: .88rem;
+      color: var(--ink-soft);
+    }
+    .stars { color: #111; letter-spacing: 2px; font-size: 1rem; }
+    .rating-count { font-weight: 600; }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 72px;
+    }
+
+    /* Hero video */
+    .hero-video-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .hero-video-frame {
+      background: #1a1a1a;
+      border-radius: 16px 16px 0 0;
+      padding: 10px 10px 0;
+      box-shadow: 0 40px 100px rgba(0,0,0,.25), 0 0 0 1px rgba(255,255,255,.05);
+    }
+
+    .hero-video-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 0 10px 4px;
+    }
+
+    .hero-video-label {
+      margin-left: 10px;
+      font-size: .72rem;
+      color: rgba(255,255,255,.3);
+      font-weight: 500;
+    }
+
+    .mockup-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .mockup-dot.r { background: #ff5f57; }
+    .mockup-dot.y { background: #ffbd2e; }
+    .mockup-dot.g { background: #28c840; }
+
+    .hero-video {
+      display: block;
+      width: 100%;
+      border-radius: 8px 8px 0 0;
+      max-height: 520px;
+      object-fit: cover;
+      background: #000;
+    }
+
+    /* ── Logos / Partners ─────────────────────────────────── */
+    #partners {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .partners-label {
+      text-align: center;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 28px;
+    }
+    .partners-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .partner-logo {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--ink-faint);
+      letter-spacing: -.01em;
+      opacity: .55;
+      transition: opacity .2s;
+    }
+    .partner-logo:hover { opacity: .9; }
+
+    /* ── Section Shared ───────────────────────────────────── */
+    .section { padding: 112px 0; }
+    .section-sm { padding: 80px 0; }
+
+
+    h2.display {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(2.2rem, 4.5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -.035em;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+
+    h2.display em { font-style: italic; color: var(--green); }
+
+    p.lead {
+      font-size: 1.1rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      max-width: 520px;
+    }
+
+    /* ── Vision ──────────────────────────────────────────── */
+    #vision .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .vision-stat-row {
+      display: flex;
+      gap: 40px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    .vision-stat h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .vision-stat p {
+      font-size: .82rem;
+      color: var(--ink-faint);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .vision-quote-block {
+      background: var(--ink);
+      color: var(--white);
+      border-radius: var(--r-card);
+      padding: 40px;
+    }
+    .vision-quote-block blockquote {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      line-height: 1.45;
+      letter-spacing: -.02em;
+      margin-bottom: 20px;
+    }
+    .vision-quote-block cite {
+      font-size: .82rem;
+      color: rgba(255,255,255,.5);
+      font-style: normal;
+    }
+    .vision-accent-tag {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--ink);
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      margin-bottom: 16px;
+    }
+
+    /* ── Values ──────────────────────────────────────────── */
+    #values { background: var(--cream-dark); }
+
+    #values .header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 40px;
+      margin-bottom: 56px;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .value-card {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 32px 28px;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .value-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 48px rgba(0,0,0,.08);
+    }
+    .value-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: .8rem;
+      font-weight: 800;
+      color: var(--ink-faint);
+      letter-spacing: .06em;
+      margin-bottom: 16px;
+    }
+    .value-card h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+    .value-card p {
+      font-size: .9rem;
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    /* ── How It Works ─────────────────────────────────────── */
+    #how .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .how-steps { margin-top: 48px; }
+
+    .how-step {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .how-step:last-child { border-bottom: 1px solid var(--border); }
+
+    .how-step-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: .82rem;
+      font-weight: 800;
+      color: var(--ink-faint);
+      padding-top: 2px;
+    }
+    .how-step.active .how-step-num { color: var(--green); }
+
+    .how-step h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      color: var(--ink);
+      margin-bottom: 0;
+      transition: color .2s;
+    }
+    .how-step p {
+      display: none;
+      font-size: .88rem;
+      color: var(--ink-soft);
+      line-height: 1.65;
+      margin-top: 10px;
+    }
+    .how-step.active p { display: block; }
+    .how-step.active h3 { color: var(--ink); }
+
+    /* phone mockup for how section */
+    .how-phone-img {
+      display: block;
+      position: sticky;
+      top: 100px;
+      max-width: 320px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ── Pilot ───────────────────────────────────────────── */
+    #pilot { background: var(--ink); color: var(--white); }
+    #pilot h2.display { color: var(--white); }
+    #pilot p.lead { color: rgba(255,255,255,.6); }
+
+    .pilot-cards {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 16px;
+      margin-top: 56px;
+    }
+
+    .pilot-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--r-card);
+      overflow: hidden;
+      transition: border-color .2s, transform .2s;
+    }
+    .pilot-card:hover {
+      border-color: rgba(184,240,64,.3);
+      transform: translateY(-4px);
+    }
+
+    .pilot-card-top {
+      height: 180px;
+      display: flex;
+      align-items: flex-end;
+      padding: 20px;
+      position: relative;
+    }
+    .pc-green  { background: linear-gradient(160deg,#1a3d29,#0a1f15); }
+    .pc-amber  { background: linear-gradient(160deg,#3d2a0a,#1f1405); }
+    .pc-violet { background: linear-gradient(160deg,#1f1040,#0a0a1f); }
+
+    .pilot-year-badge {
+      background: var(--accent);
+      color: var(--ink);
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+    .pilot-card-emoji {
+      position: absolute;
+      top: 20px; right: 20px;
+      font-size: 2.5rem;
+    }
+
+    .pilot-card-body { padding: 24px; }
+    .pilot-card-body h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .pilot-card-body p { font-size: .875rem; color: rgba(255,255,255,.5); line-height: 1.65; }
+
+    /* ── Audience ─────────────────────────────────────────── */
+    #audience .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .audience-card {
+      background: var(--ink);
+      border-radius: var(--r-card);
+      overflow: hidden;
+      color: var(--white);
+    }
+    .audience-card-top {
+      background: var(--green);
+      padding: 32px;
+    }
+    .audience-card-top h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      margin-bottom: 4px;
+    }
+    .audience-card-top p { font-size: .88rem; opacity: .8; }
+
+    .audience-card-body { padding: 28px 32px; display: flex; flex-direction: column; gap: 18px; }
+    .aud-trait { display: flex; gap: 14px; align-items: flex-start; }
+    .aud-trait-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem;
+      flex-shrink: 0;
+    }
+    .aud-trait h4 { font-size: .88rem; font-weight: 600; margin-bottom: 2px; }
+    .aud-trait p { font-size: .82rem; color: rgba(255,255,255,.5); line-height: 1.5; }
+
+    .aud-tags {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;
+    }
+    .aud-tag {
+      background: rgba(47,107,74,.15);
+      color: #6ecf99;
+      border: 1px solid rgba(47,107,74,.3);
+      padding: 5px 13px;
+      border-radius: 100px;
+      font-size: .78rem;
+      font-weight: 600;
+    }
+
+    /* ── Comparison ───────────────────────────────────────── */
+    #comparison { background: var(--cream-dark); }
+
+    .comp-table-wrap {
+      margin-top: 56px;
+      border-radius: var(--r-card);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    table.comp {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table.comp thead { background: var(--ink); color: var(--white); }
+    table.comp th {
+      padding: 18px 24px;
+      text-align: left;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    table.comp th:first-child { width: 30%; }
+    table.comp th.sw-col {
+      background: var(--green);
+    }
+    table.comp td {
+      padding: 16px 24px;
+      font-size: .9rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      line-height: 1.5;
+      background: var(--cream);
+    }
+    table.comp tr:nth-child(even) td { background: var(--cream-dark); }
+    table.comp td.sw-col {
+      background: rgba(47,107,74,.06) !important;
+      font-weight: 600;
+      color: var(--green);
+    }
+    table.comp tr:last-child td { border-bottom: none; }
+    .c-yes { color: #2a7a4a; font-weight: 700; }
+    .c-no  { color: #b0362a; font-weight: 700; }
+    .c-partial { color: #8a6a20; font-weight: 700; }
+
+    /* ── Prototype ────────────────────────────────────────── */
+    #prototype .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .proto-card {
+      background: var(--ink);
+      border-radius: var(--r-card);
+      padding: 44px 40px;
+      color: var(--white);
+      transition: transform .2s;
+    }
+    .proto-card:hover { transform: translateY(-4px); }
+
+    .proto-card-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 24px;
+    }
+    .proto-card h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -.025em;
+      margin-bottom: 12px;
+    }
+    .proto-card p { font-size: .9rem; color: rgba(255,255,255,.55); line-height: 1.65; margin-bottom: 32px; }
+
+    /* ── Budget ───────────────────────────────────────────── */
+    #budget .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .budget-items { margin-top: 36px; display: flex; flex-direction: column; gap: 20px; }
+    .budget-row { display: flex; flex-direction: column; gap: 8px; }
+    .budget-row-top { display: flex; justify-content: space-between; align-items: baseline; }
+    .budget-row-label { font-size: .9rem; font-weight: 500; color: var(--ink); }
+    .budget-row-amt {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .bar-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--ink);
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 1.1s cubic-bezier(.4,0,.2,1);
+    }
+    .bar-fill.green { background: var(--green); }
+    .bar-fill.accent { background: #a0c840; }
+
+    .budget-total-card {
+      background: var(--ink);
+      border-radius: var(--r-card);
+      padding: 40px;
+      color: var(--white);
+    }
+    .budget-total-card .label { font-size: .8rem; color: rgba(255,255,255,.45); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 12px; }
+    .budget-total-card .amount {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 800;
+      letter-spacing: -.05em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .budget-total-card .sub { font-size: .85rem; color: rgba(255,255,255,.4); }
+
+    .funding-box {
+      margin-top: 16px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+      padding: 18px;
+      font-size: .85rem;
+      color: rgba(255,255,255,.55);
+      line-height: 1.6;
+    }
+    .funding-box strong { color: rgba(255,255,255,.85); }
+
+    /* ── Timeline ─────────────────────────────────────────── */
+    #timeline .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+
+    .tl-items { margin-top: 48px; display: flex; flex-direction: column; }
+    .tl-item {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 20px;
+      padding-bottom: 40px;
+      position: relative;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .tl-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .tl-bar {
+      flex: 1;
+      width: 2px;
+      background: var(--border);
+      margin-top: 6px;
+    }
+    .tl-item:last-child .tl-bar { display: none; }
+
+    .tl-phase {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 6px;
+    }
+    .tl-item h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .tl-item p { font-size: .875rem; color: var(--ink-soft); line-height: 1.65; }
+
+    .distrib-card {
+      background: var(--cream-dark);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 32px;
+      height: fit-content;
+    }
+    .distrib-card h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      margin-bottom: 20px;
+    }
+    .distrib-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .distrib-item:last-child { border-bottom: none; }
+    .distrib-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+    .distrib-item h4 { font-size: .9rem; font-weight: 600; margin-bottom: 2px; }
+    .distrib-item p { font-size: .82rem; color: var(--ink-faint); }
+
+    /* ── CTA ─────────────────────────────────────────────── */
+    #cta {
+      background: var(--ink);
+      text-align: center;
+      padding: 120px 32px;
+    }
+    #cta h2 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      font-weight: 800;
+      letter-spacing: -.045em;
+      line-height: 1.02;
+      color: var(--white);
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+    #cta h2 em { font-style: italic; color: var(--accent); }
+    #cta p { font-size: 1.1rem; color: rgba(255,255,255,.55); margin-bottom: 40px; }
+    #cta .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    footer {
+      background: #0a0a0a;
+      padding: 40px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -.03em;
+    }
+    .footer-logo span { color: var(--accent); }
+    footer p { font-size: .82rem; color: rgba(255,255,255,.3); }
+    footer a { color: rgba(255,255,255,.5); transition: color .15s; }
+    footer a:hover { color: var(--white); }
+
+    /* ── Fade-in ─────────────────────────────────────────── */
+    .fade {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .fade.in { opacity: 1; transform: none; }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      #vision .inner,
+      #how .inner,
+      #audience .inner,
+      #budget .inner,
+      #timeline .inner { grid-template-columns: 1fr; gap: 48px; }
+      .values-grid { grid-template-columns: 1fr 1fr; }
+      .pilot-cards { grid-template-columns: 1fr; }
+      #prototype .inner { grid-template-columns: 1fr; }
+      .mockup-phone { display: none; }
+      #values .header { flex-direction: column; align-items: flex-start; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+
+    @media (max-width: 600px) {
+      .values-grid { grid-template-columns: 1fr; }
+      .comp-table-wrap { overflow-x: auto; }
+      table.comp { min-width: 560px; }
+      nav { padding: 0 20px; }
+      .container { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────────── -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo"><span class="logo-story">Story</span><span class="logo-weave">weave</span></a>
+  <ul class="nav-links">
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#pilot">Pilot Episode</a></li>
+    <li><a href="#comparison">Why Us</a></li>
+    <li><a href="#prototype">Prototype</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#prototype" class="btn btn-dark" style="padding:10px 22px; font-size:.85rem;">
+      Try Prototype
+      <span class="arrow">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </a>
+    <div class="nav-hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="container">
+    <h1>Explore the city, starting with <em>one person's story.</em></h1>
+
+    <div class="hero-rating">
+      <span class="stars">★★★★½</span>
+      <span class="rating-count">UCL Digital Heritage 2026</span>
+      <span>·</span>
+      <span>Powered by National Life Stories</span>
+    </div>
+
+    <div class="hero-actions">
+      <a href="#prototype" class="btn btn-dark">
+        Try the Prototype
+        <span class="arrow">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
+      <a href="#how" class="btn btn-accent">
+        Explore the product
+        <span class="arrow" style="background:rgba(17,17,17,.1)">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
+    </div>
+
+    <!-- Demo video -->
+    <div class="hero-video-wrap">
+      <div class="hero-video-frame">
+        <div class="hero-video-bar">
+          <div class="mockup-dot r"></div>
+          <div class="mockup-dot y"></div>
+          <div class="mockup-dot g"></div>
+          <span class="hero-video-label">Storyweave — Demo</span>
+        </div>
+        <video
+          class="hero-video"
+          src="assessment 2/4 wireframe/video/test video 3.mp4"
+          controls
+          playsinline
+          preload="metadata"
+        ></video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PARTNERS ───────────────────────────────────────────────── -->
+<section id="partners">
+  <div class="container">
+    <p class="partners-label">Research & Partnership</p>
+    <div class="partners-logos">
+      <span class="partner-logo">UCL</span>
+      <span class="partner-logo">National Life Stories</span>
+      <span class="partner-logo">British Library</span>
+      <span class="partner-logo">Historic England</span>
+      <span class="partner-logo">Arts Council England</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── VISION ─────────────────────────────────────────────────── -->
+<section id="vision" class="section">
+  <div class="container">
+    <div class="inner">
+      <div class="fade">
+        <h2 class="display">Heritage belongs to<br><em>everyone.</em></h2>
+        <p class="lead">Mainstream heritage discourse has long privileged institutional voices. Storyweave challenges this — placing marginalised, overlooked, and everyday stories at the centre of the urban experience.</p>
+        <div class="vision-stat-row">
+          <div class="vision-stat"><h3>3</h3><p>Pilot episodes planned</p></div>
+          <div class="vision-stat"><h3>4</h3><p>Distribution channels</p></div>
+          <div class="vision-stat"><h3>∞</h3><p>Branching story paths</p></div>
+        </div>
+      </div>
+      <div class="fade">
+        <div class="vision-quote-block">
+          <div class="vision-accent-tag">Oral History Archive</div>
+          <blockquote>"Heritage is not merely a collection of things, places, or practices — it is the active process of making sense of the present through the lens of the past."</blockquote>
+          <cite>— The democratisation principle behind Storyweave</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── VALUES ─────────────────────────────────────────────────── -->
+<section id="values" class="section">
+  <div class="container">
+    <div class="header fade">
+      <div>
+        <h2 class="display">What guides every<br>story we tell.</h2>
+      </div>
+      <p class="lead" style="max-width:360px;">Six principles shape everything — from which voices we amplify to how we design the interface.</p>
+    </div>
+    <div class="values-grid">
+      <div class="value-card fade">
+        <div class="value-num">01</div>
+        <h3>Curiosity</h3>
+        <p>Every route is designed to spark questions about the layers of history beneath your feet, not to deliver packaged answers.</p>
+      </div>
+      <div class="value-card fade">
+        <div class="value-num">02</div>
+        <h3>Inclusivity</h3>
+        <p>Stories from communities often absent from official heritage — migrants, women, working-class voices — are central, not marginal.</p>
+      </div>
+      <div class="value-card fade">
+        <div class="value-num">03</div>
+        <h3>Accessibility</h3>
+        <p>Audio-first design works for users with visual impairments. No specialist hardware — just a smartphone and headphones.</p>
+      </div>
+      <div class="value-card fade">
+        <div class="value-num">04</div>
+        <h3>Pleasure</h3>
+        <p>Exploring the past should be joyful. We pair rigorous history with compelling narrative craft and atmospheric soundscapes.</p>
+      </div>
+      <div class="value-card fade">
+        <div class="value-num">05</div>
+        <h3>Safety</h3>
+        <p>Routes are reviewed for safety. In-app guidance helps users navigate unfamiliar areas of the city with confidence.</p>
+      </div>
+      <div class="value-card fade">
+        <div class="value-num">06</div>
+        <h3>Respect</h3>
+        <p>We treat both the communities whose stories we tell and the historians who preserve them with deep ethical care.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ────────────────────────────────────────────── -->
+<section id="how" class="section">
+  <div class="container">
+    <div class="inner">
+      <div>
+        <h2 class="display fade">Five steps from<br>street to story.</h2>
+        <div class="how-steps fade" id="howSteps">
+          <div class="how-step active">
+            <span class="how-step-num">01</span>
+            <div>
+              <h3>Open the app near a Storyweave location</h3>
+              <p>Available on iOS and Android. Storyweave detects nearby routes and shows you a live map of trigger points around you.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <span class="how-step-num">02</span>
+            <div>
+              <h3>Walk to a trigger point — audio begins</h3>
+              <p>GPS detects when you arrive at a location point. Audio begins automatically — no tapping required. Ambient sounds blend into the historical soundscape.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <span class="how-step-num">03</span>
+            <div>
+              <h3>Choose your narrative branch</h3>
+              <p>At key moments, you choose which story thread to follow. The narrative branches based on your curiosity, not a prescribed path.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <span class="how-step-num">04</span>
+            <div>
+              <h3>Walk and listen between waypoints</h3>
+              <p>The audio is designed to feel like a conversation with someone who was there — not a museum commentary.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <span class="how-step-num">05</span>
+            <div>
+              <h3>Add your own memory to the map</h3>
+              <p>Contribute your own memory about a location. Your layer of history becomes part of the city's living record — discoverable by future walkers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade">
+        <img
+          src="assessment 2/4 wireframe/播放.png"
+          alt="Storyweave app — playback screen"
+          class="how-phone-img"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PILOT EPISODE ───────────────────────────────────────────── -->
+<section id="pilot" class="section">
+  <div class="container">
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:40px; flex-wrap:wrap;">
+      <h2 class="display fade" style="max-width:600px;">Whose Brick Lane?<br><em>A London Story.</em></h2>
+      <p class="lead fade" style="max-width:360px; margin-bottom:8px;">Three women. Three eras. One street running through East London's layered immigrant history.</p>
+    </div>
+    <div class="pilot-cards fade">
+      <div class="pilot-card">
+        <div class="pilot-card-body">
+          <h3>Suzanne Rondeau</h3>
+          <p>A Huguenot silk-weaver's widow navigating economic hardship in the same streets that would later house wave after wave of new arrivals.</p>
+        </div>
+      </div>
+      <div class="pilot-card">
+        <div class="pilot-card-body">
+          <h3>Bluma Rubinowicz</h3>
+          <p>A Jewish woman newly arrived from Eastern Europe, building community in the Whitechapel garment trade amid poverty and prejudice.</p>
+        </div>
+      </div>
+      <div class="pilot-card">
+        <div class="pilot-card-body">
+          <h3>Shahanara Begum</h3>
+          <p>A Bangladeshi community organiser facing the National Front at Altab Ali Park — a story of resistance, solidarity, and belonging.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── AUDIENCE ────────────────────────────────────────────────── -->
+<section id="audience" class="section">
+  <div class="container">
+    <div class="inner">
+      <div class="fade">
+        <div class="audience-card">
+          <div class="audience-card-top">
+            <h3>Zoey Cress, 28</h3>
+            <p>UX Designer · East London · Weekend explorer</p>
+          </div>
+          <div class="audience-card-body">
+            <div class="aud-trait">
+              <div class="aud-trait-icon">🗺️</div>
+              <div>
+                <h4>Allocentric traveller</h4>
+                <p>Prefers self-directed discovery over group tours. Seeks authenticity over tourist-facing experiences.</p>
+              </div>
+            </div>
+            <div class="aud-trait">
+              <div class="aud-trait-icon">📱</div>
+              <div>
+                <h4>Digital-native, heritage-curious</h4>
+                <p>Comfortable with apps; interested in local history but frustrated by dry, institution-led formats.</p>
+              </div>
+            </div>
+            <div class="aud-trait">
+              <div class="aud-trait-icon">🎧</div>
+              <div>
+                <h4>Regular podcast listener</h4>
+                <p>Already consumes long-form audio. Storyweave fits naturally into her existing habits.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fade">
+        <h2 class="display">Built for the curious<br>urban explorer.</h2>
+        <p class="lead">Our primary audience aligns with Historic England's <strong>"Yellow" segment</strong> — culturally engaged adults aged 25–34 who actively seek out heritage experiences but are under-served by traditional formats.</p>
+        <div class="aud-tags" style="margin-top:28px;">
+          <span class="aud-tag">Ages 25–34</span>
+          <span class="aud-tag">Urban dwellers</span>
+          <span class="aud-tag">Self-directed</span>
+          <span class="aud-tag">Podcast listeners</span>
+          <span class="aud-tag">Allocentric</span>
+          <span class="aud-tag">Heritage-curious</span>
+          <span class="aud-tag">Digital-native</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPARISON ─────────────────────────────────────────────── -->
+<section id="comparison" class="section-sm">
+  <div class="container">
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:40px; flex-wrap:wrap; margin-bottom:0;">
+      <h2 class="display fade" style="max-width:560px;">A different kind<br>of audio guide.</h2>
+      <p class="lead fade" style="max-width:360px; margin-bottom:8px;">Existing platforms treat audio guides as digital pamphlets — linear, institutional, passive. Storyweave is built around the opposite.</p>
+    </div>
+    <div class="comp-table-wrap fade">
+      <table class="comp">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>VoiceMap</th>
+            <th>SmartGuide</th>
+            <th class="sw-col">Storyweave</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GPS-triggered audio</td>
+            <td class="c-yes">✓ Yes</td>
+            <td class="c-yes">✓ Yes</td>
+            <td class="sw-col c-yes">✓ Yes</td>
+          </tr>
+          <tr>
+            <td>Branching / non-linear narrative</td>
+            <td class="c-no">✗ No</td>
+            <td class="c-no">✗ No</td>
+            <td class="sw-col c-yes">✓ Core feature</td>
+          </tr>
+          <tr>
+            <td>Community co-created stories</td>
+            <td class="c-no">✗ No</td>
+            <td class="c-no">✗ No</td>
+            <td class="sw-col c-yes">✓ Co-creation model</td>
+          </tr>
+          <tr>
+            <td>Oral history archive integration</td>
+            <td class="c-no">✗ No</td>
+            <td class="c-no">✗ No</td>
+            <td class="sw-col c-yes">✓ National Life Stories</td>
+          </tr>
+          <tr>
+            <td>Marginalised / diverse voices</td>
+            <td class="c-partial">~ Varies</td>
+            <td class="c-partial">~ Institutional</td>
+            <td class="sw-col c-yes">✓ Central mission</td>
+          </tr>
+          <tr>
+            <td>AR / VR dependency</td>
+            <td class="c-no">✗ None</td>
+            <td class="c-partial">~ Optional</td>
+            <td class="sw-col c-yes">✓ Audio-only by design</td>
+          </tr>
+          <tr>
+            <td>Free-to-user model</td>
+            <td class="c-partial">~ Freemium</td>
+            <td class="c-no">✗ B2B only</td>
+            <td class="sw-col c-yes">✓ Grant & partnership</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROTOTYPE ──────────────────────────────────────────────── -->
+<section id="prototype" class="section">
+  <div class="container">
+    <h2 class="display fade" style="max-width:600px; margin-bottom:48px;">Experience<br>the prototype.</h2>
+    <div class="inner fade">
+      <div class="proto-card">
+        <h3>Figma UI Prototype</h3>
+        <p>Explore the full app interface — onboarding, map view, audio player, and branching choice moments. Designed for mobile screens.</p>
+        <a href="https://www.figma.com/proto/ulMkyR0AMd0v9aXTjkv85S/Story-weave?page-id=0%3A1&node-id=1-2&p=f&viewport=183%2C130%2C0.14&t=xqYff9REK8HpuyFs-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=1%3A2&hotspot-hints=0" target="_blank" rel="noopener" class="btn btn-accent">
+          Open in Figma
+          <span class="arrow" style="background:rgba(17,17,17,.1)">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+      </div>
+      <div class="proto-card">
+        <h3>Twine Pilot: Whose Brick Lane?</h3>
+        <p>Play through the branching narrative of the pilot episode. Choose which woman's story to follow — and discover how the three threads interweave.</p>
+        <a href="https://zhitian-h.itch.io/whose-brick-lane-a-london-story" target="_blank" rel="noopener" class="btn btn-accent">
+          Play on Itch.io
+          <span class="arrow" style="background:rgba(17,17,17,.1)">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BUDGET ─────────────────────────────────────────────────── -->
+<section id="budget" class="section">
+  <div class="container">
+    <div class="inner">
+      <div>
+        <h2 class="display fade">Transparent<br>by design.</h2>
+        <p class="lead fade">Storyweave is built for sustainability — funded through heritage grants and cultural partnerships, keeping the platform free for users.</p>
+        <div class="budget-items fade" id="budgetBars">
+          <div class="budget-row">
+            <div class="budget-row-top">
+              <span class="budget-row-label">Production — 3 pilot episodes</span>
+              <span class="budget-row-amt">£86,100</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill green" data-w=".667"></div></div>
+          </div>
+          <div class="budget-row">
+            <div class="budget-row-top">
+              <span class="budget-row-label">Base platform development</span>
+              <span class="budget-row-amt">£43,140</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill accent" data-w=".333"></div></div>
+          </div>
+          <div class="budget-row">
+            <div class="budget-row-top">
+              <span class="budget-row-label">Partnership & licensing</span>
+              <span class="budget-row-amt">Included</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" data-w=".12"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="fade">
+        <div class="budget-total-card">
+          <div class="label">Total Estimated Budget</div>
+          <div class="amount">£129,240</div>
+          <div class="sub">For 3-episode pilot · ~£28,700 per additional episode</div>
+          <div class="funding-box">
+            Funding pathways include <strong>Arts Council England</strong>, the <strong>National Lottery Heritage Fund</strong>, and cross-institutional partnerships with universities and museums.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TIMELINE ────────────────────────────────────────────────── -->
+<section id="timeline" class="section">
+  <div class="container">
+    <h2 class="display fade" style="max-width:560px; margin-bottom:0;">From prototype<br>to platform.</h2>
+    <div class="inner" style="margin-top:0;">
+      <div class="tl-items fade">
+        <div class="tl-item">
+          <div class="tl-line"><div class="tl-dot"></div><div class="tl-bar"></div></div>
+          <div>
+            <div class="tl-phase">Phase 1 · Months 1–3</div>
+            <h3>Research & Oral History Curation</h3>
+            <p>Archival deep-dive with National Life Stories. Community consultation in Brick Lane area. Finalise the three narrative threads.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-line"><div class="tl-dot"></div><div class="tl-bar"></div></div>
+          <div>
+            <div class="tl-phase">Phase 2 · Months 4–9</div>
+            <h3>Script, Audio & App Development</h3>
+            <p>Script writing and expert review. Location audio recording. Soundscape production. Core app build with GPS triggering and branching logic.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-line"><div class="tl-dot"></div><div class="tl-bar"></div></div>
+          <div>
+            <div class="tl-phase">Phase 3 · Months 10–16</div>
+            <h3>Pilot Testing & Iteration</h3>
+            <p>Soft launch with target user groups. Accessibility audit. Iterative improvements based on in-field testing and participant feedback.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-line"><div class="tl-dot"></div><div class="tl-bar"></div></div>
+          <div>
+            <div class="tl-phase">Phase 4 · Months 17–20+</div>
+            <h3>Public Launch & Expansion</h3>
+            <p>Full public release. Community co-creation tools live. Production of episodes 2 and 3. Evaluation report for funders.</p>
+          </div>
+        </div>
+      </div>
+      <div class="fade">
+        <div class="distrib-card">
+          <h3>Four distribution channels</h3>
+          <div class="distrib-item">
+            <div class="distrib-icon">📱</div>
+            <div>
+              <h4>iOS & Android App</h4>
+              <p>Primary channel — full GPS-triggered experience</p>
+            </div>
+          </div>
+          <div class="distrib-item">
+            <div class="distrib-icon">🌐</div>
+            <div>
+              <h4>Web browser version</h4>
+              <p>Desktop experience without GPS dependency</p>
+            </div>
+          </div>
+          <div class="distrib-item">
+            <div class="distrib-icon">🎧</div>
+            <div>
+              <h4>Podcast feed</h4>
+              <p>Linear version for at-home listening</p>
+            </div>
+          </div>
+          <div class="distrib-item">
+            <div class="distrib-icon">🏛️</div>
+            <div>
+              <h4>Partner institutions</h4>
+              <p>Libraries, museums, visitor centres</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ────────────────────────────────────────────────────── -->
+<section id="cta">
+  <div class="fade">
+    <h2>Ready to walk<br>into <em>history?</em></h2>
+    <p>Try the prototype or play the pilot episode. No download required.</p>
+    <div class="actions">
+      <a href="https://www.figma.com/proto/ulMkyR0AMd0v9aXTjkv85S/Story-weave?page-id=0%3A1&node-id=1-2&p=f&viewport=183%2C130%2C0.14&t=xqYff9REK8HpuyFs-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=1%3A2&hotspot-hints=0" target="_blank" rel="noopener" class="btn btn-accent">
+        Try Figma Prototype
+        <span class="arrow" style="background:rgba(17,17,17,.1)">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
+      <a href="https://zhitian-h.itch.io/whose-brick-lane-a-london-story" target="_blank" rel="noopener" class="btn btn-outline" style="color:#fff; border-color:rgba(255,255,255,.2)">
+        Play Pilot Episode
+        <span class="arrow" style="background:rgba(255,255,255,.1)">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer>
+  <span class="footer-logo">Story<span>weave</span></span>
+  <p>A UCL Digital Heritage project · ARCL0148 · 2026 · <a href="mailto:zhitian.huang.25@ucl.ac.uk">zhitian.huang.25@ucl.ac.uk</a></p>
+  <p>In partnership with National Life Stories, British Library</p>
+</footer>
+
+<!-- ── JS ────────────────────────────────────────────────────── -->
+<script>
+  // Nav scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 48);
+  });
+
+  // Mobile hamburger
+  document.getElementById('hamburger').addEventListener('click', () => {
+    navbar.classList.toggle('open');
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => navbar.classList.remove('open'));
+  });
+
+  // Intersection observer — fade-in
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade').forEach(el => io.observe(el));
+
+  // Budget bars
+  const budgetIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.bar-fill').forEach(bar => {
+          bar.style.transform = `scaleX(${bar.dataset.w})`;
+        });
+        budgetIO.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  const bb = document.getElementById('budgetBars');
+  if (bb) budgetIO.observe(bb);
+
+  // How steps interaction
+  const steps = document.querySelectorAll('.how-step');
+  steps.forEach((step, i) => {
+    step.addEventListener('click', () => {
+      steps.forEach(s => s.classList.remove('active'));
+      step.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
