@@ -8,3 +8,15 @@ build/
 .idea/
 .vscode/
 Thumbs.db
+
+# Oversized video (133MB, exceeds GitHub limit)
+assessment 2/4 wireframe/video/屏幕录制 2026-04-21 165557.mp4
+
+# PSD source files (large, not needed for deployment)
+*.psd
+
+# Assessment/coursework documents (not needed for web deployment)
+assessment 1/
+assessment 2/
+process/
+storyweave.WordPress.2026-04-28.xml

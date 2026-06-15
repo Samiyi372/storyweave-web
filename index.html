@@ -12,19 +12,21 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --cream:     #EDEADE;
-      --cream-dark:#E3DCCE;
-      --ink:       #111111;
-      --ink-soft:  #444444;
-      --ink-faint: #888888;
-      --white:     #FFFFFF;
-      --green:     #2F6B4A;
-      --green-pill:#3D7A5B;
-      --accent:    #B8F040;   /* lime — perk-style bright secondary */
-      --border:    rgba(17,17,17,.1);
-      --r-pill:    100px;
-      --r-card:    20px;
-      --max:       1160px;
+      --cream:      #EDEADE;
+      --cream-dark: #E3DCCE;
+      --cream-card: #F5F2EA;
+      --ink:        #111111;
+      --ink-soft:   #444444;
+      --ink-faint:  #888888;
+      --white:      #FFFFFF;
+      --green:      #2F6B4A;
+      --green-light:#E8F5EE;
+      --green-pill: #3D7A5B;
+      --accent:     #B8F040;
+      --border:     rgba(17,17,17,.1);
+      --r-pill:     100px;
+      --r-card:     20px;
+      --max:        1160px;
     }
 
     html { scroll-behavior: smooth; }
@@ -102,6 +104,30 @@
     .btn-dark .arrow { background: rgba(255,255,255,.2); }
     .btn-accent .arrow { background: rgba(17,17,17,.1); }
 
+    /* ── Lang switch ─────────────────────────────────────── */
+    .lang-switch {
+      display: inline-flex;
+      border-radius: 100px;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      font-size: .8rem;
+      font-weight: 600;
+    }
+    .lang-switch a {
+      padding: 5px 12px;
+      color: var(--ink-faint);
+      transition: background .15s, color .15s;
+      text-decoration: none;
+    }
+    .lang-switch a.active {
+      background: var(--ink);
+      color: var(--white);
+    }
+    .lang-switch a:not(.active):hover {
+      background: rgba(17,17,17,.06);
+      color: var(--ink);
+    }
+
     /* ── Nav ─────────────────────────────────────────────── */
     nav {
       position: fixed;
@@ -172,10 +198,19 @@
 
     /* ── Hero ────────────────────────────────────────────── */
     #hero {
-      padding-top: 140px;
+      padding-top: 0;
       padding-bottom: 0;
       text-align: center;
       overflow: hidden;
+    }
+
+    .hero-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: 68px;
     }
 
 
@@ -256,6 +291,17 @@
       background: #000;
     }
 
+    /* ── Phone Showcase ─────────────────────────────────── */
+    #showcase {
+      background: #B8F040;
+      overflow: hidden;
+      line-height: 0;
+    }
+    .showcase-img {
+      width: 100%;
+      display: block;
+    }
+
     /* ── Logos / Partners ─────────────────────────────────── */
     #partners {
       padding: 48px 0;
@@ -314,6 +360,11 @@
     }
 
     /* ── Vision ──────────────────────────────────────────── */
+    #vision {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
     #vision .inner {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -443,6 +494,12 @@
       align-items: start;
     }
     .how-step:last-child { border-bottom: 1px solid var(--border); }
+
+    .how-step {
+      opacity: .35;
+      transition: opacity .3s;
+    }
+    .how-step.active { opacity: 1; }
 
     .how-step-num {
       font-family: 'Bricolage Grotesque', sans-serif;
@@ -818,7 +875,7 @@
     #cta {
       background: var(--ink);
       text-align: center;
-      padding: 120px 32px;
+      padding: 200px 32px 120px;
     }
     #cta h2 {
       font-family: 'Bricolage Grotesque', sans-serif;
@@ -856,6 +913,26 @@
     footer a { color: rgba(255,255,255,.5); transition: color .15s; }
     footer a:hover { color: var(--white); }
 
+    /* ── Slide in from sides (scroll-driven) ────────────── */
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-160px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(160px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .slide-left {
+      animation: slideInLeft linear both;
+      animation-timeline: view();
+      animation-range: entry -10% cover 40%;
+    }
+    .slide-right {
+      animation: slideInRight linear both;
+      animation-timeline: view();
+      animation-range: entry -10% cover 40%;
+    }
+
     /* ── Fade-in ─────────────────────────────────────────── */
     .fade {
       opacity: 0;
@@ -887,6 +964,186 @@
       nav { padding: 0 20px; }
       .container { padding: 0 20px; }
     }
+
+    /* ── Section Label ── */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .75rem; font-weight: 600; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--green); margin-bottom: 12px;
+    }
+    .section-label::before {
+      content: ''; display: block; width: 16px; height: 2px;
+      background: var(--green); border-radius: 2px;
+    }
+
+    /* ── Section Header ── */
+    .section-header { margin-bottom: 48px; }
+    .section-header h2 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 800;
+      letter-spacing: -.03em; line-height: 1.1; margin-bottom: 12px;
+    }
+    .section-header p { color: var(--ink-soft); max-width: 580px; font-size: .95rem; }
+
+    /* ── Persona ── */
+    .persona-wrap { display: grid; grid-template-columns: 340px 1fr; gap: 32px; align-items: stretch; }
+    .persona-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--r-card); overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .persona-card-top { background: var(--ink); padding: 32px 28px; color: var(--white); }
+    .persona-card-top h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.8rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: 4px;
+    }
+    .persona-card-top .role { color: var(--accent); font-size: .88rem; font-weight: 600; margin-bottom: 16px; }
+    .persona-card-top .details { font-size: .85rem; color: rgba(255,255,255,.65); line-height: 1.7; }
+    .persona-card-body { padding: 24px 28px; flex: 1; }
+    .persona-section-title {
+      font-size: .72rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--ink-faint);
+      margin-bottom: 10px; margin-top: 20px;
+    }
+    .persona-section-title:first-child { margin-top: 0; }
+    .persona-tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .persona-tag { padding: 4px 10px; border-radius: 100px; font-size: .78rem; font-weight: 500; background: var(--cream); color: var(--ink); }
+    .persona-tag.green { background: var(--green-light); color: var(--green); }
+    .persona-quote-list { display: flex; flex-direction: column; gap: 16px; }
+    .persona-quote {
+      border-left: 3px solid var(--green); padding: 12px 16px;
+      background: var(--green-light); border-radius: 0 10px 10px 0;
+      font-size: .875rem; color: var(--ink-soft); font-style: italic;
+    }
+    .persona-goals-list { list-style: none; }
+    .persona-goals-list li {
+      display: flex; gap: 10px; font-size: .875rem; color: var(--ink-soft);
+      padding: 6px 0; border-bottom: 1px solid var(--border);
+    }
+    .persona-goals-list li:last-child { border-bottom: none; }
+    .persona-goals-list li::before { content: '→'; color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .persona-speech-bubble { position: relative; overflow: visible !important; }
+    .persona-speech-bubble::before {
+      content: ''; position: absolute; width: 0; height: 0;
+      top: -26px; right: 20px;
+      border-bottom: 32px solid var(--white);
+      border-left: 22px solid transparent; border-right: 22px solid transparent; z-index: 5;
+    }
+    .persona-speech-bubble::after { content: none; }
+    .persona-right { display: flex; flex-direction: column; gap: 20px; }
+    .persona-right-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r-card); padding: 24px 28px; }
+    .persona-right-card h4 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: 14px; }
+    .persona-right-card p { font-size: .875rem; color: var(--ink-soft); line-height: 1.7; }
+
+    /* ── Stats row ── */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--border); border-radius: var(--r-card); overflow: hidden; margin-bottom: 56px; }
+    .stat-card { background: var(--cream-card); padding: 32px 28px; }
+    .stat-num { font-family: 'Bricolage Grotesque', sans-serif; font-size: 2.8rem; font-weight: 800; letter-spacing: -.04em; color: var(--green); line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-size: .85rem; color: var(--ink-soft); }
+
+    /* ── Interviewee Grid ── */
+    .interviewee-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .interviewee-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; padding: 20px 18px; transition: transform .15s, box-shadow .15s; }
+    .interviewee-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    .interviewee-avatar { width: 40px; height: 40px; border-radius: 50%; font-family: 'Bricolage Grotesque', sans-serif; font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; flex-shrink: 0; }
+    .interviewee-meta { font-size: .78rem; color: var(--ink-faint); line-height: 1.5; }
+    .interviewee-tag { display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 100px; font-size: .7rem; font-weight: 600; }
+
+    /* ── Big Quote ── */
+    .big-quote-wrap { background: var(--ink); border-radius: var(--r-card); padding: 56px 64px; position: relative; overflow: hidden; margin: 56px 0; }
+    .big-quote-wrap::before { content: '"'; position: absolute; top: -20px; left: 40px; font-family: 'Bricolage Grotesque', Georgia, serif; font-size: 14rem; font-weight: 800; color: rgba(255,255,255,.06); line-height: 1; pointer-events: none; }
+    .big-quote-text { font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(1.2rem, 2.5vw, 1.8rem); font-weight: 600; letter-spacing: -.02em; color: var(--white); line-height: 1.45; max-width: 720px; position: relative; z-index: 1; margin-bottom: 20px; }
+    .big-quote-text em { color: var(--accent); font-style: normal; }
+
+    /* ── Insights scrolly ── */
+    .insights-scrolly { padding-top: 80px; }
+    .insights-scrolly .section-header { margin-bottom: 40px; }
+    .insights-sticky-wrap { height: calc(5 * 80vh); position: relative; }
+    .insights-sticky { position: sticky; top: 68px; height: calc(100vh - 68px); display: flex; align-items: center; justify-content: center; padding: 0 80px; gap: 48px; }
+    .insights-left-panel { flex-shrink: 0; position: relative; z-index: 30; margin-bottom: 45px; }
+    .insights-left-panel .big-quote-wrap { margin: 0; width: 480px; height: 450px; padding: 32px 36px; display: flex; flex-direction: column; justify-content: center; }
+    .insights-left-panel .big-quote-text { font-size: 32px; margin-bottom: 0; }
+    .insights-right-panel { flex-shrink: 0; position: relative; display: flex; align-items: center; justify-content: center; }
+    .insights-stage { position: relative; display: flex; flex-direction: column; align-items: center; gap: 28px; }
+    .card-stack-3d { position: relative; width: 300px; height: 450px; overflow: visible; }
+    .card-stack-3d::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 100vw; top: 100%; height: 300px; background: linear-gradient(to bottom, var(--cream) 60%, transparent 100%); pointer-events: none; z-index: 20; }
+    .icard { position: absolute; inset: 0; background: var(--white); border-radius: 20px; padding: 28px 28px 24px; border: 1.5px solid var(--border); overflow: hidden; will-change: transform, opacity; transform-origin: 50% 115%; transition: transform 0.65s cubic-bezier(0.32, 0.08, 0.24, 1); display: flex; flex-direction: column; }
+    .icard::before { content: ''; position: absolute; inset: 0; background: var(--cream); border-radius: 18px; pointer-events: none; z-index: 50; opacity: 0; transition: opacity 0.45s ease; }
+    .icard-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.2rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: 10px; color: var(--ink); line-height: 1.2; }
+    .icard-body { font-size: .82rem; color: var(--ink-soft); line-height: 1.65; margin-bottom: 16px; }
+    .icard-quotes { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+    .icard-quote { background: var(--cream); border-radius: 10px; padding: 9px 12px; font-size: .76rem; color: var(--ink-soft); font-style: italic; line-height: 1.5; }
+    .icard[data-state="active"] { transform: rotate(0deg) scale(1); z-index: 10; }
+    .icard[data-state="active"]::before { opacity: 0; }
+    .icard[data-state="behind-1"] { transform: rotate(12deg) scale(0.97); z-index: 9; }
+    .icard[data-state="behind-1"]::before { opacity: 0; }
+    .icard[data-state="behind-2"] { transform: rotate(24deg) scale(0.94); z-index: 8; box-shadow: none; }
+    .icard[data-state="behind-2"]::before { opacity: 0.18; }
+    .icard[data-state="behind-3"] { transform: rotate(36deg) scale(0.91); z-index: 7; box-shadow: none; }
+    .icard[data-state="behind-3"]::before { opacity: 0.42; }
+    .icard[data-state="behind-far"] { transform: rotate(48deg) scale(0.88); z-index: 6; box-shadow: none; }
+    .icard[data-state="behind-far"]::before { opacity: 0.68; }
+    .icard[data-state="dismissed"] { transform: rotate(-58deg) scale(0.86); z-index: 1; box-shadow: none; pointer-events: none; }
+    .icard[data-state="dismissed"]::before { opacity: 1; }
+    .icard[data-state="dismissed-old"] { transform: rotate(-68deg) scale(0.84); z-index: 1; box-shadow: none; pointer-events: none; transition: none; }
+    .icard[data-state="dismissed-old"]::before { opacity: 1; }
+    .icard.fly-away { transform-origin: 50% 100% !important; z-index: 15 !important; animation: card-fan-fly 0.72s cubic-bezier(0.4, 0, 0.2, 1) forwards !important; transition: none !important; }
+    @keyframes card-fan-fly {
+      0%   { transform: rotate(0deg);    opacity: 1; }
+      99%  { transform: rotate(-179deg); opacity: 1; }
+      100% { transform: rotate(-180deg); opacity: 0; }
+    }
+    .card-dots { position: absolute; left: 32px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; align-items: center; }
+    .cdot { width: 6px; height: 6px; border-radius: 50%; background: rgba(17,17,17,.18); transition: background .3s, transform .3s; flex-shrink: 0; }
+    .cdot.active { background: var(--ink); transform: scale(1.4); }
+    .scroll-hint-label { font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); opacity: .6; }
+
+    /* ── Journey map ── */
+    .journey-image-wrap { border-radius: var(--r-card); overflow: hidden; }
+    .journey-image-wrap img { width: 100%; display: block; }
+    .journey-legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+    .journey-legend-item { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 18px 20px; }
+    .journey-legend-item h4 { font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; }
+    .journey-legend-item p { font-size: .83rem; color: var(--ink-soft); line-height: 1.6; }
+
+    /* ── Storyboard ── */
+    .storyboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .storyboard-frame { border-radius: var(--r-card); overflow: hidden; border: 1.5px solid var(--border); background: var(--white); }
+    .storyboard-frame img { width: 100%; display: block; }
+    .storyboard-caption { padding: 14px 16px; }
+    .storyboard-num { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px; }
+    .storyboard-caption p { font-size: .83rem; color: var(--ink-soft); }
+
+    /* ── Key Findings ── */
+    .findings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .finding-card { border-radius: var(--r-card); padding: 28px 32px; border: 1.5px solid var(--border); }
+    .finding-card.fc-accent { background: var(--accent); border-color: transparent; }
+    .finding-card.fc-dark { background: var(--ink); color: var(--white); border-color: transparent; }
+    .finding-card.fc-light { background: var(--white); }
+    .finding-card.fc-green { background: var(--green); color: var(--white); border-color: transparent; }
+    .finding-num { font-family: 'Bricolage Grotesque', sans-serif; font-size: 3.5rem; font-weight: 800; letter-spacing: -.06em; line-height: 1; margin-bottom: 8px; opacity: .22; }
+    .finding-card.fc-accent .finding-num { opacity: .35; color: var(--ink); }
+    .finding-card.fc-dark .finding-num, .finding-card.fc-green .finding-num { color: var(--white); }
+    .finding-card h3 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 1.2rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: 10px; }
+    .finding-card p { font-size: .875rem; line-height: 1.65; opacity: .8; }
+    .finding-card.fc-light p { opacity: 1; color: var(--ink-soft); }
+
+    /* ── Fade-up ── */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-up.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      .persona-wrap { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .interviewee-grid { grid-template-columns: repeat(2, 1fr); }
+      .journey-legend { grid-template-columns: 1fr; }
+      .storyboard-grid { grid-template-columns: 1fr 1fr; }
+      .findings-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .interviewee-grid { grid-template-columns: 1fr 1fr; }
+      .storyboard-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -897,12 +1154,15 @@
   <ul class="nav-links">
     <li><a href="#vision">Vision</a></li>
     <li><a href="#how">How It Works</a></li>
-    <li><a href="#pilot">Pilot Episode</a></li>
+    <li><a href="#audience">User Research</a></li>
     <li><a href="#comparison">Why Us</a></li>
-    <li><a href="#prototype">Prototype</a></li>
   </ul>
   <div class="nav-right">
-    <a href="#prototype" class="btn btn-dark" style="padding:10px 22px; font-size:.85rem;">
+    <div class="lang-switch">
+      <a href="index.html" class="active">EN</a>
+      <a href="index-zh.html">中文</a>
+    </div>
+    <a href="#cta" class="btn btn-dark" style="padding:10px 22px; font-size:.85rem;">
       Try Prototype
       <span class="arrow">
         <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -916,89 +1176,68 @@
 
 <!-- ── HERO ─────────────────────────────────────────────────── -->
 <section id="hero">
-  <div class="container">
-    <h1>Explore the city, starting with <em>one person's story.</em></h1>
+  <div class="hero-screen">
+    <div class="container">
+      <h1>Explore the city, starting with <em>one person's story.</em></h1>
 
-    <div class="hero-rating">
-      <span class="stars">★★★★½</span>
-      <span class="rating-count">UCL Digital Heritage 2026</span>
-      <span>·</span>
-      <span>Powered by National Life Stories</span>
-    </div>
-
-    <div class="hero-actions">
-      <a href="#prototype" class="btn btn-dark">
-        Try the Prototype
-        <span class="arrow">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-      </a>
-      <a href="#how" class="btn btn-accent">
-        Explore the product
-        <span class="arrow" style="background:rgba(17,17,17,.1)">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-      </a>
-    </div>
-
-    <!-- Demo video -->
-    <div class="hero-video-wrap">
-      <div class="hero-video-frame">
-        <div class="hero-video-bar">
-          <div class="mockup-dot r"></div>
-          <div class="mockup-dot y"></div>
-          <div class="mockup-dot g"></div>
-          <span class="hero-video-label">Storyweave — Demo</span>
-        </div>
-        <video
-          class="hero-video"
-          src="assessment 2/4 wireframe/video/test video 3.mp4"
-          controls
-          playsinline
-          preload="metadata"
-        ></video>
+      <div class="hero-actions">
+        <a href="#cta" class="btn btn-dark">
+          Try the Prototype
+          <span class="arrow">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+        <a href="#showcase" class="btn btn-accent">
+          Explore the product
+          <span class="arrow" style="background:rgba(17,17,17,.1)">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── PARTNERS ───────────────────────────────────────────────── -->
-<section id="partners">
-  <div class="container">
-    <p class="partners-label">Research & Partnership</p>
-    <div class="partners-logos">
-      <span class="partner-logo">UCL</span>
-      <span class="partner-logo">National Life Stories</span>
-      <span class="partner-logo">British Library</span>
-      <span class="partner-logo">Historic England</span>
-      <span class="partner-logo">Arts Council England</span>
-    </div>
-  </div>
+<!-- ── PHONE SHOWCASE ────────────────────────────────────────── -->
+<section id="showcase">
+  <img src="../个人作品集/作品集相关图片/交互/手机界面展示.png" alt="Storyweave app interface" class="showcase-img">
 </section>
 
 <!-- ── VISION ─────────────────────────────────────────────────── -->
 <section id="vision" class="section">
   <div class="container">
     <div class="inner">
-      <div class="fade">
-        <h2 class="display">Heritage belongs to<br><em>everyone.</em></h2>
-        <p class="lead">Mainstream heritage discourse has long privileged institutional voices. Storyweave challenges this — placing marginalised, overlooked, and everyday stories at the centre of the urban experience.</p>
-        <div class="vision-stat-row">
-          <div class="vision-stat"><h3>3</h3><p>Pilot episodes planned</p></div>
-          <div class="vision-stat"><h3>4</h3><p>Distribution channels</p></div>
-          <div class="vision-stat"><h3>∞</h3><p>Branching story paths</p></div>
-        </div>
-      </div>
-      <div class="fade">
+      <div class="slide-left">
         <div class="vision-quote-block">
           <div class="vision-accent-tag">Oral History Archive</div>
           <blockquote>"Heritage is not merely a collection of things, places, or practices — it is the active process of making sense of the present through the lens of the past."</blockquote>
           <cite>— The democratisation principle behind Storyweave</cite>
         </div>
       </div>
+      <div class="slide-right">
+        <h2 class="display">Heritage belongs to<br><em>everyone.</em></h2>
+        <p class="lead">Mainstream heritage discourse has long privileged institutional voices. Storyweave challenges this — placing marginalised, overlooked, and everyday stories at the centre of the urban experience.</p>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- ── DEMO VIDEO ─────────────────────────────────────────────── -->
+<div style="padding-bottom: 80px;">
+  <div class="container">
+    <div class="hero-video-wrap">
+      <video
+        class="hero-video"
+        src="assessment 2/4 wireframe/video/test video 3.mp4"
+        autoplay
+        loop
+        muted
+        playsinline
+        style="border-radius: 12px;"
+      ></video>
+    </div>
+  </div>
+</div>
 
 <!-- ── VALUES ─────────────────────────────────────────────────── -->
 <section id="values" class="section">
@@ -1007,7 +1246,6 @@
       <div>
         <h2 class="display">What guides every<br>story we tell.</h2>
       </div>
-      <p class="lead" style="max-width:360px;">Six principles shape everything — from which voices we amplify to how we design the interface.</p>
     </div>
     <div class="values-grid">
       <div class="value-card fade">
@@ -1100,83 +1338,331 @@
   </div>
 </section>
 
-<!-- ── PILOT EPISODE ───────────────────────────────────────────── -->
-<section id="pilot" class="section">
+<!-- ── AUDIENCE / PERSONA ─────────────────────────────────────── -->
+<section id="audience" class="section">
   <div class="container">
-    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:40px; flex-wrap:wrap;">
-      <h2 class="display fade" style="max-width:600px;">Whose Brick Lane?<br><em>A London Story.</em></h2>
-      <p class="lead fade" style="max-width:360px; margin-bottom:8px;">Three women. Three eras. One street running through East London's layered immigrant history.</p>
+    <div class="fade" style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:48px;">
+      <div>
+        <div class="section-label">User Persona</div>
+        <h2 class="display" style="margin-bottom:12px;">Meet Zoey Cress</h2>
+        <p class="lead">A synthesised persona representing our core target audience: the narrative explorer who craves depth, authenticity, and emotional connection in travel.</p>
+      </div>
+      <img src="assessment 1/client portrait/头像.png" alt="Zoey Cress" style="width:100px;height:100px;object-fit:cover;border-radius:10px;flex-shrink:0;margin-left:32px;margin-top:44px;" />
     </div>
-    <div class="pilot-cards fade">
-      <div class="pilot-card">
-        <div class="pilot-card-body">
-          <h3>Suzanne Rondeau</h3>
-          <p>A Huguenot silk-weaver's widow navigating economic hardship in the same streets that would later house wave after wave of new arrivals.</p>
+    <div class="persona-wrap fade">
+      <div class="persona-card">
+        <div class="persona-card-top">
+          <h3>Zoey Cress</h3>
+          <div class="role">Narrative Explorer</div>
+          <div class="details">
+            Age: 24 · Postgraduate student, social sciences<br>
+            City: A metropolis rich in culture, yet her heart yearns for historically layered places<br><br>
+            Xiaohongshu power user · Apple Podcasts subscriber<br>
+            Google Maps + travel apps, but finds decision-making hard
+          </div>
+        </div>
+        <div class="persona-card-body">
+          <div class="persona-section-title">Goals</div>
+          <ul class="persona-goals-list">
+            <li>Find a truly unique travel route, not influencer checklists</li>
+            <li>Join a reliable community for niche, genuine discoveries</li>
+            <li>Experience a map filled with stories and human warmth</li>
+          </ul>
         </div>
       </div>
-      <div class="pilot-card">
-        <div class="pilot-card-body">
-          <h3>Bluma Rubinowicz</h3>
-          <p>A Jewish woman newly arrived from Eastern Europe, building community in the Whitechapel garment trade amid poverty and prejudice.</p>
+      <div class="persona-right">
+        <div class="persona-right-card persona-speech-bubble">
+          <h4>What she says</h4>
+          <div class="persona-quote-list">
+            <div class="persona-quote">"I followed a social media travel guide from start to finish, but it felt like I was just ticking off someone else's checklist — everything went exactly as expected, with no surprises at all."</div>
+            <div class="persona-quote">"The museum narration was too dry, and the Wikipedia-like text failed to spark my interest. What I really want to know is — how do people who actually live here feel about this place?"</div>
+          </div>
         </div>
-      </div>
-      <div class="pilot-card">
-        <div class="pilot-card-body">
-          <h3>Shahanara Begum</h3>
-          <p>A Bangladeshi community organiser facing the National Front at Altab Ali Park — a story of resistance, solidarity, and belonging.</p>
+        <div class="persona-right-card">
+          <h4>Core Values</h4>
+          <div class="persona-tag-list">
+            <div class="persona-tag green">Depth over breadth</div>
+            <div class="persona-tag green">Against algorithms</div>
+            <div class="persona-tag green">People over institutions</div>
+            <div class="persona-tag green">Creative documentation</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="persona-right-card">
+            <h4>Her frustrations</h4>
+            <p>Recommendation algorithms push the same "check-in spots." Can't tell which content is genuine vs paid ad. Dry institutional narration kills emotional connection. Can't find niche, authentic local content.</p>
+          </div>
+          <div class="persona-right-card">
+            <h4>What she needs</h4>
+            <p>A story, a piece of history, or a moment of emotional resonance to truly set her on a journey. Honest first-person narratives. Freedom to explore at her own pace, with guidance available when she wants it.</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── AUDIENCE ────────────────────────────────────────────────── -->
-<section id="audience" class="section">
+<!-- ── PARTICIPANTS ───────────────────────────────────────────── -->
+<section class="section-sm">
   <div class="container">
-    <div class="inner">
-      <div class="fade">
-        <div class="audience-card">
-          <div class="audience-card-top">
-            <h3>Zoey Cress, 28</h3>
-            <p>UX Designer · East London · Weekend explorer</p>
-          </div>
-          <div class="audience-card-body">
-            <div class="aud-trait">
-              <div class="aud-trait-icon">🗺️</div>
-              <div>
-                <h4>Allocentric traveller</h4>
-                <p>Prefers self-directed discovery over group tours. Seeks authenticity over tourist-facing experiences.</p>
-              </div>
-            </div>
-            <div class="aud-trait">
-              <div class="aud-trait-icon">📱</div>
-              <div>
-                <h4>Digital-native, heritage-curious</h4>
-                <p>Comfortable with apps; interested in local history but frustrated by dry, institution-led formats.</p>
-              </div>
-            </div>
-            <div class="aud-trait">
-              <div class="aud-trait-icon">🎧</div>
-              <div>
-                <h4>Regular podcast listener</h4>
-                <p>Already consumes long-form audio. Storyweave fits naturally into her existing habits.</p>
-              </div>
-            </div>
-          </div>
+    <div class="section-header fade-up">
+      <div class="section-label">Who we spoke to</div>
+      <h2>10 participants, 4 countries</h2>
+      <p>We recruited a diverse group ranging from young international students to older domestic travellers, capturing a wide spectrum of travel motivations and digital habits.</p>
+    </div>
+    <div class="stats-row fade-up">
+      <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">Interviews conducted</div></div>
+      <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">Geographic locations</div></div>
+      <div class="stat-card"><div class="stat-num">46</div><div class="stat-label">Years age spread (20–66)</div></div>
+      <div class="stat-card"><div class="stat-num">11</div><div class="stat-label">Questions explored</div></div>
+    </div>
+    <div class="interviewee-grid fade-up">
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#FFE4E4;color:#C44444;">P1</div>
+        <div class="interviewee-meta">Age 22 · Chinese student in UK</div>
+        <div class="interviewee-tag" style="background:#FFE4E4;color:#C44444;">Story-seeker</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#E8F5EE;color:#2F6B4A;">P2</div>
+        <div class="interviewee-meta">Age 20 · Chinese student in UK</div>
+        <div class="interviewee-tag" style="background:#E8F5EE;color:#2F6B4A;">Meticulous planner</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#FFF6D6;color:#B8860B;">P3</div>
+        <div class="interviewee-meta">Age 21 · Chinese student in UK</div>
+        <div class="interviewee-tag" style="background:#FFF6D6;color:#B8860B;">History enthusiast</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#E0EDFF;color:#2B5CC4;">P4</div>
+        <div class="interviewee-meta">Age 22 · Chinese student in US</div>
+        <div class="interviewee-tag" style="background:#E0EDFF;color:#2B5CC4;">Personal-connection</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#EDE0FF;color:#6B3FCB;">P5</div>
+        <div class="interviewee-meta">Age 21 · Chinese student in US</div>
+        <div class="interviewee-tag" style="background:#EDE0FF;color:#6B3FCB;">Spontaneous explorer</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#FFE8D6;color:#C06030;">P6</div>
+        <div class="interviewee-meta">Age 54 · Living in China</div>
+        <div class="interviewee-tag" style="background:#FFE8D6;color:#C06030;">Comfort traveller</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#E4F0E8;color:#3A6B4A;">P7</div>
+        <div class="interviewee-meta">Age 66 · Living in China</div>
+        <div class="interviewee-tag" style="background:#E4F0E8;color:#3A6B4A;">Guided tour fan</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#FFE4F5;color:#C4449A;">P8</div>
+        <div class="interviewee-meta">Age 21 · HK (China) university student</div>
+        <div class="interviewee-tag" style="background:#FFE4F5;color:#C4449A;">Crowd avoider</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#E0F4FF;color:#2B7EC4;">P9</div>
+        <div class="interviewee-meta">Age 21 · Chinese student in Germany</div>
+        <div class="interviewee-tag" style="background:#E0F4FF;color:#2B7EC4;">Efficiency-focused</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#F0FFE4;color:#4A8030;">P10</div>
+        <div class="interviewee-meta">Age 22 · Chinese student in UK</div>
+        <div class="interviewee-tag" style="background:#F0FFE4;color:#4A8030;">Serendipity traveller</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── INSIGHTS SCROLLY ────────────────────────────────────────── -->
+<section class="insights-scrolly" id="insights-scrolly">
+  <div class="container">
+    <div class="section-header" style="padding-bottom:0">
+      <div class="section-label">Interview Findings</div>
+      <h2>6 recurring themes</h2>
+      <p>Across all 10 interviews, six consistent patterns emerged that directly shaped Storyweave's design priorities.</p>
+    </div>
+  </div>
+  <div class="insights-sticky-wrap" id="insights-sticky-wrap">
+    <div class="insights-sticky" id="insights-sticky">
+      <div class="insights-left-panel">
+        <div class="big-quote-wrap">
+          <div class="big-quote-text">"The museum narration was too dry, and the Wikipedia-like text failed to spark my interest. What I really want to know is — <em>how do people who actually live here feel about this place?</em>"</div>
         </div>
       </div>
-      <div class="fade">
-        <h2 class="display">Built for the curious<br>urban explorer.</h2>
-        <p class="lead">Our primary audience aligns with Historic England's <strong>"Yellow" segment</strong> — culturally engaged adults aged 25–34 who actively seek out heritage experiences but are under-served by traditional formats.</p>
-        <div class="aud-tags" style="margin-top:28px;">
-          <span class="aud-tag">Ages 25–34</span>
-          <span class="aud-tag">Urban dwellers</span>
-          <span class="aud-tag">Self-directed</span>
-          <span class="aud-tag">Podcast listeners</span>
-          <span class="aud-tag">Allocentric</span>
-          <span class="aud-tag">Heritage-curious</span>
-          <span class="aud-tag">Digital-native</span>
+      <div class="insights-right-panel">
+        <div class="insights-stage">
+          <div class="card-stack-3d" id="card-stack">
+            <div class="icard" data-index="0">
+              <h3 class="icard-title">Stories drive motivation</h3>
+              <p class="icard-body">Almost every participant mentioned that they need a compelling narrative (historical, mythological, or personal) before they feel motivated to visit a place. Facts alone don't move people.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"I need a story to draw me in. Without a narrative as foundation, travel feels like sightseeing without meaning."</div>
+                <div class="icard-quote">"I followed a social media guide and felt like ticking someone else's checklist. I can't tell which recommendations are genuine and which are disguised ads."</div>
+              </div>
+            </div>
+            <div class="icard" data-index="1">
+              <h3 class="icard-title">Personal > algorithmic content</h3>
+              <p class="icard-body">Participants trust genuine personal accounts far more than influencer content or algorithm-pushed recommendations. They can tell when something is "authentic" vs. paid promotion.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"Social media has become much less trustworthy. There are too many ads — you simply can't find in-depth, valuable sharing anymore."</div>
+                <div class="icard-quote">"A friend's recommendation always has more persuasive power than watching a video, because I understand their taste and can filter accordingly."</div>
+              </div>
+            </div>
+            <div class="icard" data-index="2">
+              <h3 class="icard-title">Safety is the #1 deterrent</h3>
+              <p class="icard-body">Personal safety concerns were the single most cited reason for not visiting a place, mentioned by almost every participant, from young students to older travellers.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"I'm afraid of going to places where I might get robbed or pickpocketed. Security is always my first filter."</div>
+                <div class="icard-quote">"Overcrowding is also a dealbreaker. Once I see everyone going there, I immediately lose interest."</div>
+              </div>
+            </div>
+            <div class="icard" data-index="3">
+              <h3 class="icard-title">Self-exploration, guided by narrative</h3>
+              <p class="icard-body">9 out of 10 participants prefer self-exploration over guided tours. But they still want narrative support: audio guides, podcasts, or story context, available on demand.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"I like exploring freely. Tour groups are too restrictive — I can't develop my own connection with the city. But at major sites I sometimes wish someone would explain things."</div>
+                <div class="icard-quote">"I sometimes listen directly to a podcast about the place. It feels more interesting than the official audio guide."</div>
+              </div>
+            </div>
+            <div class="icard" data-index="4">
+              <h3 class="icard-title">Memory is physical &amp; sensory</h3>
+              <p class="icard-body">Participants use physical artefacts (tickets, postcards, earrings, pressed flowers) and sensory anchors like a song tied to a place to recall and re-experience travel memories.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"I listen to the same song on repeat in a new city. Later that song becomes a portal back to that exact feeling and place."</div>
+                <div class="icard-quote">"I collect everything — tickets, pretty receipts, transit cards — and paste them in a notebook. It becomes a physical record of everywhere I've been."</div>
+              </div>
+            </div>
+            <div class="icard" data-index="5">
+              <h3 class="icard-title">Information fragmentation frustrates</h3>
+              <p class="icard-body">Switching between multiple apps, wading through paid content, and not finding local or authentic perspectives were the most common friction points across all users.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"Switching between apps constantly is so annoying. I want everything in one place, but I also don't trust any single platform."</div>
+                <div class="icard-quote">"No matter how much I search, I'm always stuck in an information bubble. I can only access tourist-facing content, never how locals actually feel."</div>
+              </div>
+            </div>
+          </div>
+          <div class="scroll-hint-label">scroll to explore</div>
         </div>
+      </div>
+      <div class="card-dots" id="card-dots">
+        <div class="cdot active"></div><div class="cdot"></div><div class="cdot"></div>
+        <div class="cdot"></div><div class="cdot"></div><div class="cdot"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── JOURNEY MAP ─────────────────────────────────────────────── -->
+<section class="section-sm" style="position:relative;z-index:10;background:var(--cream);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-label">User Journey Map</div>
+      <h2>7 stages of a cultural travel experience</h2>
+      <p>Mapped across Discover → Choose → Explore → Rate → Share → Create → Reflect, tracing the emotional highs and lows that define how our users move through cultural travel.</p>
+    </div>
+    <div class="fade-up">
+      <div class="journey-image-wrap">
+        <img src="assessment 1/client portrait/journey map/green journey 2.png" alt="User Journey Map — Behaviour and Thoughts" />
+      </div>
+    </div>
+    <div style="margin-top:16px; border-radius:var(--r-card); overflow:hidden;">
+      <img src="assessment 1/client portrait/journey map/green journey 3.png" alt="User Journey Map — Problems and Opportunities" style="width:100%;display:block;" />
+    </div>
+    <div class="journey-legend fade-up">
+      <div class="journey-legend-item">
+        <h4>Key Emotional Low Point</h4>
+        <p>At the "Explore & Immerse" stage, the absence of timely local context causes a dip in emotional engagement. Users feel disconnected from the place's living culture.</p>
+      </div>
+      <div class="journey-legend-item">
+        <h4>Critical Pain Point</h4>
+        <p>Lacking a timely travel journal or coordinate-recording tool was flagged as the biggest friction across the journey: users lose place data and can't revisit or share accurately.</p>
+      </div>
+      <div class="journey-legend-item">
+        <h4>Biggest Opportunity</h4>
+        <p>The "Create" and "Reflect & Grow" stages are currently almost entirely unserved. There's a huge gap for tools that help users process, organise and re-share their experience.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STORYBOARD ─────────────────────────────────────────────── -->
+<section class="section-sm" style="position:relative;z-index:10;background:var(--cream);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-label">Storyboard</div>
+      <h2>How Zoey uses Storyweave</h2>
+      <p>A 5-scene narrative sketch showing the full user journey, from the spark of a travel idea to immersive, audio-led exploration in the city.</p>
+    </div>
+    <div class="storyboard-grid fade-up">
+      <div class="storyboard-frame">
+        <img src="assessment 1/storyboard/微信图片_20260201002526_381_242.png" alt="Storyboard scene 01" />
+        <div class="storyboard-caption">
+          <div class="storyboard-num">Scene 01</div>
+          <p>Zoey has reading week. She considers visiting a museum but feels the pull of discovering somewhere more meaningful.</p>
+        </div>
+      </div>
+      <div class="storyboard-frame">
+        <img src="assessment 1/storyboard/微信图片_20260201002529_382_242.png" alt="Storyboard scene 02" />
+        <div class="storyboard-caption">
+          <div class="storyboard-num">Scene 02</div>
+          <p>She opens Storyweave and finds a narrative-led route, "A Day in the Life of a 19th Century Clerk," drawn across the London map.</p>
+        </div>
+      </div>
+      <div class="storyboard-frame">
+        <img src="assessment 1/storyboard/微信图片_20260201002531_383_242.png" alt="Storyboard scene 03" />
+        <div class="storyboard-caption">
+          <div class="storyboard-num">Scene 03</div>
+          <p>She can also browse curated stories and discover places by the people who lived there, not just by map pin density.</p>
+        </div>
+      </div>
+      <div class="storyboard-frame">
+        <img src="assessment 1/storyboard/微信图片_20260201002533_384_242.png" alt="Storyboard scene 04" />
+        <div class="storyboard-caption">
+          <div class="storyboard-num">Scene 04</div>
+          <p>Walking through Brick Lane, Zoey follows the audio story, an immersive layered narrative that brings each site to life without stopping her movement.</p>
+        </div>
+      </div>
+      <div class="storyboard-frame">
+        <img src="assessment 1/storyboard/微信图片_20260201002534_385_242.png" alt="Storyboard scene 05" />
+        <div class="storyboard-caption">
+          <div class="storyboard-num">Scene 05</div>
+          <p>She can select a route mode (Calm Route, Sense-Friendly, Accessible, or Safety-Focused), tailoring the experience to her needs that day.</p>
+        </div>
+      </div>
+      <div class="storyboard-frame" style="background:var(--ink);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:32px 28px;">
+        <div style="font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:16px;">Key insight from storyboard</div>
+        <p style="font-family:'Bricolage Grotesque',sans-serif;font-size:1.1rem;font-weight:600;letter-spacing:-.02em;color:#fff;line-height:1.5;">"Narrative-first" navigation changes how people move through the city; they follow stories, not star ratings.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── KEY FINDINGS ────────────────────────────────────────────── -->
+<section class="section-sm" style="position:relative;z-index:10;background:var(--cream);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-label">Key Findings</div>
+      <h2>What the research tells us</h2>
+      <p>Four actionable conclusions that directly shaped Storyweave's product direction.</p>
+    </div>
+    <div class="findings-grid fade-up">
+      <div class="finding-card fc-dark">
+        <div class="finding-num">01</div>
+        <h3>People need narrative before motivation</h3>
+        <p>No participant described deciding to visit a place based on facts or ratings alone. A story (historical, personal, or mythological) was always the emotional entry point. Storyweave must lead with story, not map pins.</p>
+      </div>
+      <div class="finding-card fc-light">
+        <div class="finding-num" style="opacity:.08">02</div>
+        <h3>Trust is earned through voice, not metrics</h3>
+        <p>Star ratings and view counts are largely ignored. Participants responded to first-person audio narration and friend recommendations because they carry a distinct human voice. Storyweave's audio content must sound like a person, not a guide book.</p>
+      </div>
+      <div class="finding-card fc-accent">
+        <div class="finding-num">03</div>
+        <h3>Freedom + optional guidance = ideal UX</h3>
+        <p>The sweet spot isn't self-guided OR guided: it's both, switchable. Users want to roam freely but have rich narrative context available whenever they pause to look around. Our interface should never interrupt, only enhance.</p>
+      </div>
+      <div class="finding-card fc-green">
+        <div class="finding-num">04</div>
+        <h3>The post-visit experience is completely unserved</h3>
+        <p>Every participant struggled to capture, organise, or re-share their experience after returning. There is a clear product gap for a "living memory" layer that bridges travel notes, route logs, and reflective storytelling.</p>
       </div>
     </div>
   </div>
@@ -1187,7 +1673,6 @@
   <div class="container">
     <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:40px; flex-wrap:wrap; margin-bottom:0;">
       <h2 class="display fade" style="max-width:560px;">A different kind<br>of audio guide.</h2>
-      <p class="lead fade" style="max-width:360px; margin-bottom:8px;">Existing platforms treat audio guides as digital pamphlets — linear, institutional, passive. Storyweave is built around the opposite.</p>
     </div>
     <div class="comp-table-wrap fade">
       <table class="comp">
@@ -1248,155 +1733,6 @@
   </div>
 </section>
 
-<!-- ── PROTOTYPE ──────────────────────────────────────────────── -->
-<section id="prototype" class="section">
-  <div class="container">
-    <h2 class="display fade" style="max-width:600px; margin-bottom:48px;">Experience<br>the prototype.</h2>
-    <div class="inner fade">
-      <div class="proto-card">
-        <h3>Figma UI Prototype</h3>
-        <p>Explore the full app interface — onboarding, map view, audio player, and branching choice moments. Designed for mobile screens.</p>
-        <a href="https://www.figma.com/proto/ulMkyR0AMd0v9aXTjkv85S/Story-weave?page-id=0%3A1&node-id=1-2&p=f&viewport=183%2C130%2C0.14&t=xqYff9REK8HpuyFs-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=1%3A2&hotspot-hints=0" target="_blank" rel="noopener" class="btn btn-accent">
-          Open in Figma
-          <span class="arrow" style="background:rgba(17,17,17,.1)">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </a>
-      </div>
-      <div class="proto-card">
-        <h3>Twine Pilot: Whose Brick Lane?</h3>
-        <p>Play through the branching narrative of the pilot episode. Choose which woman's story to follow — and discover how the three threads interweave.</p>
-        <a href="https://zhitian-h.itch.io/whose-brick-lane-a-london-story" target="_blank" rel="noopener" class="btn btn-accent">
-          Play on Itch.io
-          <span class="arrow" style="background:rgba(17,17,17,.1)">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── BUDGET ─────────────────────────────────────────────────── -->
-<section id="budget" class="section">
-  <div class="container">
-    <div class="inner">
-      <div>
-        <h2 class="display fade">Transparent<br>by design.</h2>
-        <p class="lead fade">Storyweave is built for sustainability — funded through heritage grants and cultural partnerships, keeping the platform free for users.</p>
-        <div class="budget-items fade" id="budgetBars">
-          <div class="budget-row">
-            <div class="budget-row-top">
-              <span class="budget-row-label">Production — 3 pilot episodes</span>
-              <span class="budget-row-amt">£86,100</span>
-            </div>
-            <div class="bar-track"><div class="bar-fill green" data-w=".667"></div></div>
-          </div>
-          <div class="budget-row">
-            <div class="budget-row-top">
-              <span class="budget-row-label">Base platform development</span>
-              <span class="budget-row-amt">£43,140</span>
-            </div>
-            <div class="bar-track"><div class="bar-fill accent" data-w=".333"></div></div>
-          </div>
-          <div class="budget-row">
-            <div class="budget-row-top">
-              <span class="budget-row-label">Partnership & licensing</span>
-              <span class="budget-row-amt">Included</span>
-            </div>
-            <div class="bar-track"><div class="bar-fill" data-w=".12"></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="fade">
-        <div class="budget-total-card">
-          <div class="label">Total Estimated Budget</div>
-          <div class="amount">£129,240</div>
-          <div class="sub">For 3-episode pilot · ~£28,700 per additional episode</div>
-          <div class="funding-box">
-            Funding pathways include <strong>Arts Council England</strong>, the <strong>National Lottery Heritage Fund</strong>, and cross-institutional partnerships with universities and museums.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── TIMELINE ────────────────────────────────────────────────── -->
-<section id="timeline" class="section">
-  <div class="container">
-    <h2 class="display fade" style="max-width:560px; margin-bottom:0;">From prototype<br>to platform.</h2>
-    <div class="inner" style="margin-top:0;">
-      <div class="tl-items fade">
-        <div class="tl-item">
-          <div class="tl-line"><div class="tl-dot"></div><div class="tl-bar"></div></div>
-          <div>
-            <div class="tl-phase">Phase 1 · Months 1–3</div>
-            <h3>Research & Oral History Curation</h3>
-            <p>Archival deep-dive with National Life Stories. Community consultation in Brick Lane area. Finalise the three narrative threads.</p>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-line"><div class="tl-dot"></div><div class="tl-bar"></div></div>
-          <div>
-            <div class="tl-phase">Phase 2 · Months 4–9</div>
-            <h3>Script, Audio & App Development</h3>
-            <p>Script writing and expert review. Location audio recording. Soundscape production. Core app build with GPS triggering and branching logic.</p>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-line"><div class="tl-dot"></div><div class="tl-bar"></div></div>
-          <div>
-            <div class="tl-phase">Phase 3 · Months 10–16</div>
-            <h3>Pilot Testing & Iteration</h3>
-            <p>Soft launch with target user groups. Accessibility audit. Iterative improvements based on in-field testing and participant feedback.</p>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-line"><div class="tl-dot"></div><div class="tl-bar"></div></div>
-          <div>
-            <div class="tl-phase">Phase 4 · Months 17–20+</div>
-            <h3>Public Launch & Expansion</h3>
-            <p>Full public release. Community co-creation tools live. Production of episodes 2 and 3. Evaluation report for funders.</p>
-          </div>
-        </div>
-      </div>
-      <div class="fade">
-        <div class="distrib-card">
-          <h3>Four distribution channels</h3>
-          <div class="distrib-item">
-            <div class="distrib-icon">📱</div>
-            <div>
-              <h4>iOS & Android App</h4>
-              <p>Primary channel — full GPS-triggered experience</p>
-            </div>
-          </div>
-          <div class="distrib-item">
-            <div class="distrib-icon">🌐</div>
-            <div>
-              <h4>Web browser version</h4>
-              <p>Desktop experience without GPS dependency</p>
-            </div>
-          </div>
-          <div class="distrib-item">
-            <div class="distrib-icon">🎧</div>
-            <div>
-              <h4>Podcast feed</h4>
-              <p>Linear version for at-home listening</p>
-            </div>
-          </div>
-          <div class="distrib-item">
-            <div class="distrib-icon">🏛️</div>
-            <div>
-              <h4>Partner institutions</h4>
-              <p>Libraries, museums, visitor centres</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ── CTA ────────────────────────────────────────────────────── -->
 <section id="cta">
@@ -1420,15 +1756,65 @@
   </div>
 </section>
 
-<!-- ── FOOTER ─────────────────────────────────────────────────── -->
-<footer>
-  <span class="footer-logo">Story<span>weave</span></span>
-  <p>A UCL Digital Heritage project · ARCL0148 · 2026 · <a href="mailto:zhitian.huang.25@ucl.ac.uk">zhitian.huang.25@ucl.ac.uk</a></p>
-  <p>In partnership with National Life Stories, British Library</p>
-</footer>
-
 <!-- ── JS ────────────────────────────────────────────────────── -->
 <script>
+  // Fade-up observer for research sections
+  const fuObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); fuObserver.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => fuObserver.observe(el));
+
+  // Insight card stack scroll driver
+  (function () {
+    const wrap  = document.getElementById('insights-sticky-wrap');
+    const cards = Array.from(document.querySelectorAll('.icard'));
+    const dots  = Array.from(document.querySelectorAll('.cdot'));
+    const hint  = document.querySelector('.scroll-hint-label');
+    const N = cards.length;
+    const behindNames = ['active','behind-1','behind-2','behind-3','behind-far','behind-far'];
+    let prevActive = 0;
+    const flyingCards = new Set();
+    function getState(rel) {
+      if (rel === -1) return 'dismissed';
+      if (rel < -1)  return 'dismissed-old';
+      return behindNames[Math.min(rel, behindNames.length - 1)];
+    }
+    function triggerFlyAway(card) {
+      flyingCards.add(card);
+      card.classList.remove('fly-away'); void card.offsetWidth; card.classList.add('fly-away');
+      card.addEventListener('animationend', () => {
+        card.style.transition = 'none'; card.classList.remove('fly-away');
+        card.dataset.state = 'dismissed'; void card.offsetWidth;
+        card.style.transition = ''; flyingCards.delete(card);
+      }, { once: true });
+    }
+    function update() {
+      if (!wrap) return;
+      const rect = wrap.getBoundingClientRect(), navH = 68, viewH = window.innerHeight - navH;
+      const scrolled = -(rect.top - navH), maxScroll = wrap.offsetHeight - viewH;
+      const progress = Math.max(0, Math.min(1, scrolled / maxScroll));
+      const active = Math.round(progress * (N - 1));
+      cards.forEach((card, i) => {
+        const rel = i - active, prevRel = i - prevActive;
+        if (flyingCards.has(card)) return;
+        if (prevRel === 0 && rel === -1 && active !== prevActive) triggerFlyAway(card);
+        else { card.classList.remove('fly-away'); card.dataset.state = getState(rel); }
+      });
+      dots.forEach((d, i) => d.classList.toggle('active', i === active));
+      if (hint) hint.style.opacity = progress < 0.04 ? '0.6' : '0';
+      prevActive = active;
+    }
+    function scrollToCard(i) {
+      if (!wrap) return;
+      const navH = 68, viewH = window.innerHeight - navH, maxScroll = wrap.offsetHeight - viewH;
+      window.scrollTo({ top: wrap.offsetTop - navH + (i / (N - 1)) * maxScroll, behavior: 'smooth' });
+    }
+    dots.forEach((d, i) => { d.style.cursor = 'pointer'; d.addEventListener('click', () => scrollToCard(i)); });
+    cards.forEach((card, i) => { card.dataset.state = getState(i); });
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  })();
+
   // Nav scroll
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
@@ -1473,6 +1859,31 @@
       step.classList.add('active');
     });
   });
+
+  const showcaseImg = document.querySelector('.showcase-img');
+  if (showcaseImg) {
+    const images = [
+      '../个人作品集/作品集相关图片/交互/手机界面展示.png',
+      '网页素材/hover 手机界面展示 1.png',
+      '网页素材/hover 手机界面展示 2.png',
+      '网页素材/hover 手机界面展示 3.png'
+    ];
+    images.slice(1).forEach(src => { const i = new Image(); i.src = src; });
+    let cycleTimer = null;
+    let idx = 0;
+    showcaseImg.addEventListener('mouseenter', () => {
+      idx = 1;
+      showcaseImg.src = images[idx];
+      cycleTimer = setInterval(() => {
+        idx = (idx + 1) % images.length;
+        showcaseImg.src = images[idx];
+      }, 600);
+    });
+    showcaseImg.addEventListener('mouseleave', () => {
+      clearInterval(cycleTimer);
+      cycleTimer = null;
+    });
+  }
 </script>
 </body>
 </html>

@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Research · Storyweave</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:     #EDEADE;
+      --cream-dark:#E3DCCE;
+      --cream-card:#F5F2EA;
+      --ink:       #111111;
+      --ink-soft:  #444444;
+      --ink-faint: #888888;
+      --white:     #FFFFFF;
+      --green:     #2F6B4A;
+      --green-light: #E8F5EE;
+      --accent:    #B8F040;
+      --border:    rgba(17,17,17,.1);
+      --r-pill:    100px;
+      --r-card:    20px;
+      --max:       1160px;
+
+      --col-pink:  #FFE4E4;
+      --col-yellow:#FFF6D6;
+      --col-green: #DFF5E8;
+      --col-blue:  #E0EDFF;
+      --col-purple:#EDE0FF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 36px;
+      background: rgba(237,234,222,.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -.04em;
+    }
+    .logo-story { color: var(--ink); }
+    .logo-weave { color: var(--green); }
+    .nav-back {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .875rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      padding: 7px 16px;
+      border-radius: 100px;
+      border: 1.5px solid var(--border);
+      transition: background .15s, color .15s;
+    }
+    .nav-back:hover { background: rgba(17,17,17,.06); color: var(--ink); }
+    .nav-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 32px;
+      font-size: .8rem;
+      color: var(--ink-faint);
+    }
+    .nav-breadcrumb span { color: var(--ink-soft); font-weight: 500; }
+
+    /* ── Section Label ── */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 16px; height: 2px;
+      background: var(--green);
+      border-radius: 2px;
+    }
+
+    /* ── Hero ── */
+    #hero {
+      padding-top: 128px;
+      padding-bottom: 80px;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .hero-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; }
+    #hero h1 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 4.8rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -.04em;
+      max-width: 760px;
+      margin-bottom: 24px;
+    }
+    #hero h1 em {
+      font-style: italic;
+      color: var(--green);
+    }
+    #hero p {
+      max-width: 600px;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+      margin-bottom: 40px;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item { }
+    .hero-meta-label {
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 4px;
+    }
+    .hero-meta-value {
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    /* ── Sections ── */
+    section {
+      padding: 80px 0;
+    }
+
+    .section-header {
+      margin-bottom: 48px;
+    }
+    .section-header h2 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .section-header p {
+      color: var(--ink-soft);
+      max-width: 580px;
+      font-size: .95rem;
+    }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border-radius: var(--r-card);
+      overflow: hidden;
+      margin-bottom: 56px;
+    }
+    .stat-card {
+      background: var(--cream-card);
+      padding: 32px 28px;
+    }
+    .stat-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: .85rem;
+      color: var(--ink-soft);
+    }
+
+    /* ── Interviewee Grid ── */
+    .interviewee-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    .interviewee-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 18px;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .interviewee-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    }
+    .interviewee-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+    .interviewee-name {
+      font-weight: 600;
+      font-size: .9rem;
+      margin-bottom: 4px;
+    }
+    .interviewee-meta {
+      font-size: .78rem;
+      color: var(--ink-faint);
+      line-height: 1.5;
+    }
+    .interviewee-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: .7rem;
+      font-weight: 600;
+    }
+
+    /* ── Persona ── */
+    .persona-wrap {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    .persona-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-card);
+      overflow: hidden;
+    }
+    .persona-card-top {
+      background: var(--ink);
+      padding: 32px 28px;
+      color: var(--white);
+    }
+    .persona-card-top h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      margin-bottom: 4px;
+    }
+    .persona-card-top .role {
+      color: var(--accent);
+      font-size: .88rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .persona-card-top .details {
+      font-size: .85rem;
+      color: rgba(255,255,255,.65);
+      line-height: 1.7;
+    }
+    .persona-card-body {
+      padding: 24px 28px;
+    }
+    .persona-section-title {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 10px;
+      margin-top: 20px;
+    }
+    .persona-section-title:first-child { margin-top: 0; }
+    .persona-tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .persona-tag {
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: .78rem;
+      font-weight: 500;
+      background: var(--cream);
+      color: var(--ink);
+    }
+    .persona-tag.green { background: var(--green-light); color: var(--green); }
+
+    .persona-quote-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .persona-quote {
+      border-left: 3px solid var(--green);
+      padding: 12px 16px;
+      background: var(--green-light);
+      border-radius: 0 10px 10px 0;
+      font-size: .875rem;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .persona-goals-list {
+      list-style: none;
+    }
+    .persona-goals-list li {
+      display: flex;
+      gap: 10px;
+      font-size: .875rem;
+      color: var(--ink-soft);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .persona-goals-list li:last-child { border-bottom: none; }
+    .persona-goals-list li::before {
+      content: '→';
+      color: var(--green);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Speech bubble tail on "What she says" card ── */
+    .persona-speech-bubble {
+      position: relative;
+      overflow: visible !important;
+    }
+    /* Isosceles triangle: symmetric ▲, base overlaps card top */
+    .persona-speech-bubble::before {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      top: -26px;
+      right: 20px;
+      border-bottom: 32px solid var(--white);
+      border-left: 22px solid transparent;
+      border-right: 22px solid transparent;
+      z-index: 5;
+    }
+    .persona-speech-bubble::after { content: none; }
+
+    /* ── Persona right side ── */
+    .persona-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .persona-right-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 24px 28px;
+    }
+    .persona-right-card h4 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: 14px;
+    }
+    .persona-right-card p {
+      font-size: .875rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+    }
+
+    /* ── Insight themes ── */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .insight-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .insight-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+    .insight-card.theme-motivation::before { background: #FF7A7A; }
+    .insight-card.theme-media::before { background: #FFB647; }
+    .insight-card.theme-deterrent::before { background: #7C9CF5; }
+    .insight-card.theme-explore::before { background: #56C27A; }
+    .insight-card.theme-memory::before { background: #C47AF5; }
+    .insight-card.theme-pain::before { background: #F5A07A; }
+
+    .insight-icon {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+    }
+    .insight-card.theme-motivation .insight-icon { background: #FFEAEA; }
+    .insight-card.theme-media .insight-icon { background: #FFF4E0; }
+    .insight-card.theme-deterrent .insight-icon { background: #EAF0FF; }
+    .insight-card.theme-explore .insight-icon { background: #E4F7EC; }
+    .insight-card.theme-memory .insight-icon { background: #F5EAFF; }
+    .insight-card.theme-pain .insight-icon { background: #FFF0E8; }
+
+    .insight-card h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: 10px;
+    }
+    .insight-card p {
+      font-size: .85rem;
+      color: var(--ink-soft);
+      margin-bottom: 16px;
+      line-height: 1.65;
+    }
+    .insight-quotes {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .insight-quote {
+      background: var(--cream);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: .8rem;
+      color: var(--ink-soft);
+      font-style: italic;
+      position: relative;
+    }
+    .insight-quote::before {
+      content: none;
+    }
+    .insight-quote .attribution {
+      display: block;
+      font-style: normal;
+      font-size: .72rem;
+      color: var(--ink-faint);
+      margin-top: 4px;
+    }
+
+    /* ── Journey Map ── */
+    .journey-wrap {
+      position: relative;
+    }
+    .journey-stages {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border-radius: 14px 14px 0 0;
+      overflow: hidden;
+      margin-bottom: 2px;
+    }
+    .journey-stage {
+      padding: 14px 12px;
+      text-align: center;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      color: var(--white);
+    }
+    .stage-discover  { background: #3D6FD4; }
+    .stage-choose    { background: #5E4FBF; }
+    .stage-explore   { background: #3D9C6E; }
+    .stage-rate      { background: #C7882C; }
+    .stage-share     { background: #C44C4C; }
+    .stage-create    { background: #7A6BC0; }
+    .stage-reflect   { background: #4A7A5E; }
+
+    .journey-image-wrap {
+      border-radius: 0 0 var(--r-card) var(--r-card);
+      overflow: hidden;
+    }
+    .journey-image-wrap img {
+      width: 100%;
+      display: block;
+    }
+
+    .journey-legend {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .journey-legend-item {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .journey-legend-item h4 {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 8px;
+    }
+    .journey-legend-item p {
+      font-size: .83rem;
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+
+    /* ── Storyboard ── */
+    .storyboard-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 40px;
+      align-items: center;
+    }
+    .storyboard-intro h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -.03em;
+      margin-bottom: 12px;
+    }
+    .storyboard-intro p {
+      font-size: .9rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+    }
+
+    .storyboard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .storyboard-frame {
+      border-radius: var(--r-card);
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+    }
+    .storyboard-frame img {
+      width: 100%;
+      display: block;
+    }
+    .storyboard-caption {
+      padding: 14px 16px;
+    }
+    .storyboard-num {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 4px;
+    }
+    .storyboard-caption p {
+      font-size: .83rem;
+      color: var(--ink-soft);
+    }
+
+    /* ── Big Quote ── */
+    .big-quote-wrap {
+      background: var(--ink);
+      border-radius: var(--r-card);
+      padding: 56px 64px;
+      position: relative;
+      overflow: hidden;
+      margin: 56px 0;
+    }
+    .big-quote-wrap::before {
+      content: '"';
+      position: absolute;
+      top: -20px; left: 40px;
+      font-family: 'Bricolage Grotesque', Georgia, serif;
+      font-size: 14rem;
+      font-weight: 800;
+      color: rgba(255,255,255,.06);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .big-quote-text {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      font-weight: 600;
+      letter-spacing: -.02em;
+      color: var(--white);
+      line-height: 1.45;
+      max-width: 720px;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 20px;
+    }
+    .big-quote-text em {
+      color: var(--accent);
+      font-style: normal;
+    }
+    .big-quote-attr {
+      font-size: .85rem;
+      color: rgba(255,255,255,.5);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Key Findings Grid ── */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .finding-card {
+      border-radius: var(--r-card);
+      padding: 28px 32px;
+      border: 1.5px solid var(--border);
+    }
+    .finding-card.accent { background: var(--accent); border-color: transparent; }
+    .finding-card.dark { background: var(--ink); color: var(--white); border-color: transparent; }
+    .finding-card.light { background: var(--white); }
+    .finding-card.green { background: var(--green); color: var(--white); border-color: transparent; }
+
+    .finding-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -.06em;
+      line-height: 1;
+      margin-bottom: 8px;
+      opacity: .22;
+    }
+    .finding-card.accent .finding-num { opacity: .35; color: var(--ink); }
+    .finding-card.dark .finding-num { color: var(--white); }
+    .finding-card.green .finding-num { color: var(--white); }
+    .finding-card h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: 10px;
+    }
+    .finding-card p {
+      font-size: .875rem;
+      line-height: 1.65;
+      opacity: .8;
+    }
+    .finding-card.light p { opacity: 1; color: var(--ink-soft); }
+
+    /* ── Opportunity Cards ── */
+    .opportunity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: var(--border);
+      border-radius: var(--r-card);
+      overflow: hidden;
+    }
+    .opportunity-item {
+      background: var(--white);
+      padding: 24px 32px;
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 20px;
+      align-items: start;
+      transition: background .15s;
+    }
+    .opportunity-item:hover { background: var(--cream-card); }
+    .opportunity-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      background: var(--green-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .opportunity-content h4 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: 4px;
+    }
+    .opportunity-content p {
+      font-size: .875rem;
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+
+    /* ── Journey Full Image Section ── */
+    .full-journey-wrap {
+      border-radius: var(--r-card);
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+    }
+    .full-journey-wrap img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ── Storyboard full ── */
+    .sb-full {
+      border-radius: var(--r-card);
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+    }
+    .sb-full img { width: 100%; display: block; }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 80px 0;
+      text-align: center;
+    }
+    .cta-section h2 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -.04em;
+      margin-bottom: 16px;
+    }
+    .cta-section p {
+      color: var(--ink-soft);
+      margin-bottom: 32px;
+    }
+    .cta-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: var(--r-pill);
+      font-family: 'Inter', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: transform .15s, box-shadow .15s;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-dark {
+      background: var(--ink);
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(0,0,0,.18);
+    }
+    .btn-dark:hover { box-shadow: 0 8px 28px rgba(0,0,0,.25); }
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { background: rgba(17,17,17,.05); }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .interviewee-grid { grid-template-columns: repeat(2, 1fr); }
+      .persona-wrap { grid-template-columns: 1fr; }
+      .insights-grid { grid-template-columns: 1fr 1fr; }
+      .findings-grid { grid-template-columns: 1fr; }
+      .journey-stages { grid-template-columns: repeat(4, 1fr); }
+      .journey-legend { grid-template-columns: 1fr; }
+      .storyboard-intro { grid-template-columns: 1fr; }
+      .storyboard-grid { grid-template-columns: 1fr 1fr; }
+      .big-quote-wrap { padding: 40px 32px; }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 0 20px; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .interviewee-grid { grid-template-columns: 1fr 1fr; }
+      .insights-grid { grid-template-columns: 1fr; }
+      .storyboard-grid { grid-template-columns: 1fr; }
+      .journey-stages { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* ── Insights fan card carousel ── */
+    .insights-scrolly {
+      padding-top: 80px;
+    }
+    .insights-scrolly .section-header {
+      margin-bottom: 40px;
+    }
+    .insights-sticky-wrap {
+      height: calc(5 * 80vh);
+      position: relative;
+    }
+    .insights-sticky {
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 80px;
+      gap: 48px;
+    }
+    .insights-left-panel {
+      flex-shrink: 0;
+      position: relative;
+      z-index: 30;
+      margin-bottom: 45px;
+    }
+    .insights-left-panel .big-quote-wrap {
+      margin: 0;
+      width: 480px;
+      height: 450px;
+      padding: 32px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .insights-left-panel .big-quote-text {
+      font-size: 32px;
+      margin-bottom: 0;
+    }
+    .insights-right-panel {
+      flex-shrink: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .insights-stage {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+    .card-counter {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    .card-counter-total { opacity: .5; }
+
+    /* The fan container — portrait 2:3 */
+    .card-stack-3d {
+      position: relative;
+      width: 300px;
+      height: 450px;
+      overflow: visible;
+    }
+
+    /* Gradient mask — starts at the card bottom, extends downward only */
+    .card-stack-3d::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      top: 100%;
+      height: 300px;
+      background: linear-gradient(to bottom, var(--cream) 60%, transparent 100%);
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .icard {
+      position: absolute;
+      inset: 0;
+      background: var(--white);
+      border-radius: 20px;
+      padding: 28px 28px 24px;
+      border: 1.5px solid var(--border);
+      overflow: hidden;
+      will-change: transform, opacity;
+      /* Pivot point below the card — creates the fan rotation */
+      transform-origin: 50% 115%;
+      transition: transform 0.65s cubic-bezier(0.32, 0.08, 0.24, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    /* Cream overlay — dims card without making background transparent */
+    .icard::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--cream);
+      border-radius: 18px;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0;
+      transition: opacity 0.45s ease;
+    }
+
+    .icard-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      margin-bottom: 10px;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+    .icard-body {
+      font-size: .82rem;
+      color: var(--ink-soft);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+    .icard-quotes {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .icard-quote {
+      background: var(--cream);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: .76rem;
+      color: var(--ink-soft);
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    /* ── Fan states — each step rotates 12° around the pivot below ── */
+    .icard[data-state="active"] {
+      transform: rotate(0deg) scale(1);
+      z-index: 10;
+    }
+    .icard[data-state="active"]::before { opacity: 0; }
+
+    .icard[data-state="behind-1"] {
+      transform: rotate(12deg) scale(0.97);
+      z-index: 9;
+    }
+    .icard[data-state="behind-1"]::before { opacity: 0; }
+
+    .icard[data-state="behind-2"] {
+      transform: rotate(24deg) scale(0.94);
+      z-index: 8;
+      box-shadow: none;
+    }
+    .icard[data-state="behind-2"]::before { opacity: 0.18; }
+
+    .icard[data-state="behind-3"] {
+      transform: rotate(36deg) scale(0.91);
+      z-index: 7;
+      box-shadow: none;
+    }
+    .icard[data-state="behind-3"]::before { opacity: 0.42; }
+
+    .icard[data-state="behind-far"] {
+      transform: rotate(48deg) scale(0.88);
+      z-index: 6;
+      box-shadow: none;
+    }
+    .icard[data-state="behind-far"]::before { opacity: 0.68; }
+
+    /* dismissed: fully hidden after fly-away; negative angle so return sweep is clockwise */
+    .icard[data-state="dismissed"] {
+      transform: rotate(-58deg) scale(0.86);
+      z-index: 1;
+      box-shadow: none;
+      pointer-events: none;
+    }
+    .icard[data-state="dismissed"]::before { opacity: 1; }
+
+    .icard[data-state="dismissed-old"] {
+      transform: rotate(-68deg) scale(0.84);
+      z-index: 1;
+      box-shadow: none;
+      pointer-events: none;
+      transition: none;
+    }
+    .icard[data-state="dismissed-old"]::before { opacity: 1; }
+
+    /* Fly-away: counter-clockwise around bottom-centre pivot, then invisible */
+    .icard.fly-away {
+      transform-origin: 50% 100% !important;
+      z-index: 15 !important;
+      animation: card-fan-fly 0.72s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+      transition: none !important;
+    }
+
+    @keyframes card-fan-fly {
+      0%   { transform: rotate(0deg);    opacity: 1; }
+      99%  { transform: rotate(-179deg); opacity: 1; }
+      100% { transform: rotate(-180deg); opacity: 0; }
+    }
+
+    /* dot nav — vertical, pinned to left of sticky container */
+    .card-dots {
+      position: absolute;
+      left: 32px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .cdot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(17,17,17,.18);
+      transition: background .3s, transform .3s, height .3s;
+      flex-shrink: 0;
+    }
+    .cdot.active {
+      background: var(--ink);
+      transform: scale(1.4);
+    }
+    .scroll-hint-label {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      opacity: .6;
+    }
+
+    /* ── Scroll animation ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="logo-story">Story</span><span class="logo-weave">weave</span>
+    </a>
+
+    <a href="index.html" class="nav-back">
+      ← Back to main
+    </a>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="container">
+      <h1>Listening to <em>real people</em> before building anything</h1>
+      <p>We interviewed 10 participants across different age groups and locations to understand how people discover, experience, and remember cultural heritage travel, and where the current experience falls short.</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Method</div>
+          <div class="hero-meta-value">Semi-structured interviews</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Participants</div>
+          <div class="hero-meta-value">10 interviewees</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Age range</div>
+          <div class="hero-meta-value">20 – 66 years old</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="hero-meta-label">Location</div>
+          <div class="hero-meta-value">UK, US, China, Germany, HK (China)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Participants -->
+  <section>
+    <div class="container">
+      <div class="section-header fade-up">
+        <div class="section-label">Who we spoke to</div>
+        <h2>10 participants, 4 countries</h2>
+        <p>We recruited a diverse group ranging from young international students to older domestic travellers, capturing a wide spectrum of travel motivations and digital habits.</p>
+      </div>
+
+      <div class="stats-row fade-up">
+        <div class="stat-card">
+          <div class="stat-num">10</div>
+          <div class="stat-label">Interviews conducted</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">5</div>
+          <div class="stat-label">Geographic locations</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">46</div>
+          <div class="stat-label">Years age spread (20–66)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">11</div>
+          <div class="stat-label">Questions explored</div>
+        </div>
+      </div>
+
+      <div class="interviewee-grid fade-up">
+        <div class="interviewee-card">
+          <div class="interviewee-avatar" style="background:#FFE4E4;color:#C44444;">P1</div>
+          <div class="interviewee-meta">Age 22 · Chinese student in UK</div>
+          <div class="interviewee-tag" style="background:#FFE4E4;color:#C44444;">Story-seeker</div>
+        </div>
+        <div class="interviewee-card">
+          <div class="interviewee-avatar" style="background:#E8F5EE;color:#2F6B4A;">P2</div>
+          <div class="interviewee-meta">Age 20 · Chinese student in UK</div>
+          <div class="interviewee-tag" style="background:#E8F5EE;color:#2F6B4A;">Meticulous planner</div>
+        </div>
+        <div class="interviewee-card">
+          <div class="interviewee-avatar" style="background:#FFF6D6;color:#B8860B;">P3</div>
+          <div class="interviewee-meta">Age 21 · Chinese student in UK</div>
+          <div class="interviewee-tag" style="background:#FFF6D6;color:#B8860B;">History enthusiast</div>
+        </div>
+        <div class="interviewee-card">
+          <div class="interviewee-avatar" style="background:#E0EDFF;color:#2B5CC4;">P4</div>
+          <div class="interviewee-meta">Age 22 · Chinese student in US</div>
+          <div class="interviewee-tag" style="background:#E0EDFF;color:#2B5CC4;">Personal-connection</div>
+        </div>
+        <div class="interviewee-card">
+          <div class="interviewee-avatar" style="background:#EDE0FF;color:#6B3FCB;">P5</div>
+          <div class="interviewee-meta">Age 21 · Chinese student in US</div>
+          <div class="interviewee-tag" style="background:#EDE0FF;color:#6B3FCB;">Spontaneous explorer</div>
+        </div>
+        <div class="interviewee-card">
+          <div class="interviewee-avatar" style="background:#FFE8D6;color:#C06030;">P6</div>
+          <div class="interviewee-meta">Age 54 · Living in China</div>
+          <div class="interviewee-tag" style="background:#FFE8D6;color:#C06030;">Comfort traveller</div>
+        </div>
+        <div class="interviewee-card">
+          <div class="interviewee-avatar" style="background:#E4F0E8;color:#3A6B4A;">P7</div>
+          <div class="interviewee-meta">Age 66 · Living in China</div>
+          <div class="interviewee-tag" style="background:#E4F0E8;color:#3A6B4A;">Guided tour fan</div>
+        </div>
+        <div class="interviewee-card">
+          <div class="interviewee-avatar" style="background:#FFE4F5;color:#C4449A;">P8</div>
+          <div class="interviewee-meta">Age 21 · HK (China) university student</div>
+          <div class="interviewee-tag" style="background:#FFE4F5;color:#C4449A;">Crowd avoider</div>
+        </div>
+        <div class="interviewee-card">
+          <div class="interviewee-avatar" style="background:#E0F4FF;color:#2B7EC4;">P9</div>
+          <div class="interviewee-meta">Age 21 · Chinese student in Germany</div>
+          <div class="interviewee-tag" style="background:#E0F4FF;color:#2B7EC4;">Efficiency-focused</div>
+        </div>
+        <div class="interviewee-card">
+          <div class="interviewee-avatar" style="background:#F0FFE4;color:#4A8030;">P10</div>
+          <div class="interviewee-meta">Age 22 · Chinese students in UK</div>
+          <div class="interviewee-tag" style="background:#F0FFE4;color:#4A8030;">Serendipity travellers</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- User Persona -->
+  <section>
+    <div class="container">
+      <div class="section-header fade-up" style="display:flex;align-items:flex-start;justify-content:space-between;">
+        <div>
+          <div class="section-label">User Persona</div>
+          <h2>Meet Zoey Cress</h2>
+          <p>A synthesised persona representing our core target audience: the narrative explorer who craves depth, authenticity, and emotional connection in travel.</p>
+        </div>
+        <img src="assessment 1/client portrait/头像.png" alt="Zoey Cress" style="width:100px;height:100px;object-fit:cover;border-radius:10px;flex-shrink:0;margin-left:32px;margin-top:44px;" />
+      </div>
+
+      <div class="persona-wrap fade-up">
+        <!-- Left: persona card -->
+        <div class="persona-card">
+          <div class="persona-card-top">
+            <h3>Zoey Cress</h3>
+            <div class="role">Narrative Explorer</div>
+            <div class="details">
+              Age: 24 · Postgraduate student, social sciences<br>
+              City: A metropolis rich in culture, yet her heart yearns for historically layered places<br><br>
+              Xiaohongshu power user · Apple Podcasts subscriber<br>
+              Google Maps + travel apps, but finds decision-making hard
+            </div>
+          </div>
+          <div class="persona-card-body">
+
+
+            <div class="persona-section-title">Goals</div>
+            <ul class="persona-goals-list">
+              <li>Find a truly unique travel route, not influencer checklists</li>
+              <li>Join a reliable community for niche, genuine discoveries</li>
+              <li>Experience a map filled with stories and human warmth</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right: quotes + context -->
+        <div class="persona-right">
+          <div class="persona-right-card persona-speech-bubble">
+            <h4>What she says</h4>
+            <div class="persona-quote-list">
+              <div class="persona-quote">
+                "I followed a social media travel guide from start to finish, but it felt like I was just ticking off someone else's checklist — everything went exactly as expected, with no surprises at all."
+              </div>
+              <div class="persona-quote">
+                "The museum narration was too dry, and the Wikipedia-like text failed to spark my interest. What I really want to know is — how do people who actually live here feel about this place?"
+              </div>
+            </div>
+          </div>
+          <div class="persona-right-card">
+            <h4>Core Values</h4>
+            <div class="persona-tag-list">
+              <div class="persona-tag green">Depth over breadth</div>
+              <div class="persona-tag green">Against algorithms</div>
+              <div class="persona-tag green">People over institutions</div>
+              <div class="persona-tag green">Creative documentation</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+            <div class="persona-right-card">
+              <h4>Her frustrations</h4>
+              <p style="font-size:.85rem;color:var(--ink-soft);line-height:1.65">Recommendation algorithms push the same "check-in spots." Can't tell which content is genuine vs paid ad. Dry institutional narration kills emotional connection. Can't find niche, authentic local content.</p>
+            </div>
+            <div class="persona-right-card">
+              <h4>What she needs</h4>
+              <p style="font-size:.85rem;color:var(--ink-soft);line-height:1.65">A story, a piece of history, or a moment of emotional resonance to truly set her on a journey. Honest first-person narratives. Freedom to explore at her own pace, with guidance available when she wants it.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Insights from Interviews -->
+  <section class="insights-scrolly" id="insights-scrolly">
+    <div class="container">
+      <div class="section-header" style="padding-bottom:0">
+        <div class="section-label">Interview Findings</div>
+        <h2>6 recurring themes</h2>
+        <p>Across all 10 interviews, six consistent patterns emerged that directly shaped Storyweave's design priorities.</p>
+      </div>
+    </div>
+
+    <div class="insights-sticky-wrap" id="insights-sticky-wrap">
+      <div class="insights-sticky" id="insights-sticky">
+
+        <!-- LEFT: quote -->
+        <div class="insights-left-panel">
+          <div class="big-quote-wrap">
+            <div class="big-quote-text">
+              "The museum narration was too dry, and the Wikipedia-like text failed to spark my interest. What I really want to know is — <em>how do people who actually live here feel about this place?</em>"
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: card stack -->
+        <div class="insights-right-panel">
+        <div class="insights-stage">
+
+          <!-- Card stack -->
+          <div class="card-stack-3d" id="card-stack">
+
+            <div class="icard theme-motivation" data-index="0">
+              <h3 class="icard-title">Stories drive motivation</h3>
+              <p class="icard-body">Almost every participant mentioned that they need a compelling narrative (historical, mythological, or personal) before they feel motivated to visit a place. Facts alone don't move people.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"I need a story to draw me in. Without a narrative as foundation, travel feels like sightseeing without meaning."</div>
+                <div class="icard-quote">"I followed a social media guide and felt like ticking someone else's checklist. I can't tell which recommendations are genuine and which are disguised ads."</div>
+              </div>
+            </div>
+
+            <div class="icard theme-media" data-index="1">
+              <h3 class="icard-title">Personal > algorithmic content</h3>
+              <p class="icard-body">Participants trust genuine personal accounts far more than influencer content or algorithm-pushed recommendations. They can tell when something is "authentic" vs. paid promotion.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"Social media has become much less trustworthy. There are too many ads — you simply can't find in-depth, valuable sharing anymore."</div>
+                <div class="icard-quote">"A friend's recommendation always has more persuasive power than watching a video, because I understand their taste and can filter accordingly."</div>
+              </div>
+            </div>
+
+            <div class="icard theme-deterrent" data-index="2">
+              <h3 class="icard-title">Safety is the #1 deterrent</h3>
+              <p class="icard-body">Personal safety concerns were the single most cited reason for not visiting a place, mentioned by almost every participant, from young students to older travellers.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"I'm afraid of going to places where I might get robbed or pickpocketed. Security is always my first filter."</div>
+                <div class="icard-quote">"Overcrowding is also a dealbreaker. Once I see everyone going there, I immediately lose interest."</div>
+              </div>
+            </div>
+
+            <div class="icard theme-explore" data-index="3">
+              <h3 class="icard-title">Self-exploration, guided by narrative</h3>
+              <p class="icard-body">9 out of 10 participants prefer self-exploration over guided tours. But they still want narrative support: audio guides, podcasts, or story context, available on demand.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"I like exploring freely. Tour groups are too restrictive — I can't develop my own connection with the city. But at major sites I sometimes wish someone would explain things."</div>
+                <div class="icard-quote">"I sometimes listen directly to a podcast about the place. It feels more interesting than the official audio guide."</div>
+              </div>
+            </div>
+
+            <div class="icard theme-memory" data-index="4">
+              <h3 class="icard-title">Memory is physical &amp; sensory</h3>
+              <p class="icard-body">Participants use physical artefacts (tickets, postcards, earrings, pressed flowers) and sensory anchors like a song tied to a place to recall and re-experience travel memories.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"I listen to the same song on repeat in a new city. Later that song becomes a portal back to that exact feeling and place."</div>
+                <div class="icard-quote">"I collect everything — tickets, pretty receipts, transit cards — and paste them in a notebook. It becomes a physical record of everywhere I've been."</div>
+              </div>
+            </div>
+
+            <div class="icard theme-pain" data-index="5">
+              <h3 class="icard-title">Information fragmentation frustrates</h3>
+              <p class="icard-body">Switching between multiple apps, wading through paid content, and not finding local or authentic perspectives were the most common friction points across all users.</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"Switching between apps constantly is so annoying. I want everything in one place, but I also don't trust any single platform."</div>
+                <div class="icard-quote">"No matter how much I search, I'm always stuck in an information bubble. I can only access tourist-facing content, never how locals actually feel."</div>
+              </div>
+            </div>
+
+          </div><!-- /card-stack -->
+
+          <div class="scroll-hint-label">scroll to explore</div>
+
+        </div><!-- /insights-stage -->
+        </div><!-- /insights-right-panel -->
+
+        <!-- Dot nav — vertical, left side -->
+        <div class="card-dots" id="card-dots">
+          <div class="cdot active"></div>
+          <div class="cdot"></div>
+          <div class="cdot"></div>
+          <div class="cdot"></div>
+          <div class="cdot"></div>
+          <div class="cdot"></div>
+        </div>
+
+      </div><!-- /insights-sticky -->
+    </div><!-- /insights-sticky-wrap -->
+  </section>
+
+  <!-- User Journey Map -->
+  <section style="position:relative;z-index:10;background:var(--cream);">
+    <div class="container">
+      <div class="section-header fade-up">
+        <div class="section-label">User Journey Map</div>
+        <h2>7 stages of a cultural travel experience</h2>
+        <p>Mapped across Discover → Choose → Explore → Rate → Share → Create → Reflect, tracing the emotional highs and lows that define how our users move through cultural travel.</p>
+      </div>
+
+      <div class="journey-wrap fade-up">
+        <div class="journey-image-wrap" style="border-radius:var(--r-card);">
+          <img src="assessment 1/client portrait/journey map/green journey 2.png" alt="User Journey Map — Behaviour and Thoughts" />
+        </div>
+      </div>
+
+      <div style="margin-top:16px; border-radius:var(--r-card); overflow:hidden;">
+        <img src="assessment 1/client portrait/journey map/green journey 3.png" alt="User Journey Map — Problems and Opportunities" style="width:100%;display:block;" />
+      </div>
+
+      <div class="journey-legend fade-up">
+        <div class="journey-legend-item">
+          <h4>Key Emotional Low Point</h4>
+          <p>At the "Explore & Immerse" stage, the absence of timely local context causes a dip in emotional engagement. Users feel disconnected from the place's living culture.</p>
+        </div>
+        <div class="journey-legend-item">
+          <h4>Critical Pain Point</h4>
+          <p>Lacking a timely travel journal or coordinate-recording tool was flagged as the biggest friction across the journey: users lose place data and can't revisit or share accurately.</p>
+        </div>
+        <div class="journey-legend-item">
+          <h4>Biggest Opportunity</h4>
+          <p>The "Create" and "Reflect & Grow" stages are currently almost entirely unserved. There's a huge gap for tools that help users process, organise and re-share their experience.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Storyboard -->
+  <section style="position:relative;z-index:10;background:var(--cream);">
+    <div class="container">
+      <div class="section-header fade-up">
+        <div class="section-label">Storyboard</div>
+        <h2>How Zoey uses Storyweave</h2>
+        <p>A 5-scene narrative sketch showing the full user journey, from the spark of a travel idea to immersive, audio-led exploration in the city.</p>
+      </div>
+
+      <div class="storyboard-grid fade-up">
+        <div class="storyboard-frame">
+          <img src="assessment 1/storyboard/微信图片_20260201002526_381_242.png" alt="Storyboard scene 01" />
+          <div class="storyboard-caption">
+            <div class="storyboard-num">Scene 01</div>
+            <p>Zoey has reading week. She considers visiting a museum but feels the pull of discovering somewhere more meaningful.</p>
+          </div>
+        </div>
+        <div class="storyboard-frame">
+          <img src="assessment 1/storyboard/微信图片_20260201002529_382_242.png" alt="Storyboard scene 02" />
+          <div class="storyboard-caption">
+            <div class="storyboard-num">Scene 02</div>
+            <p>She opens Storyweave and finds a narrative-led route, "A Day in the Life of a 19th Century Clerk," drawn across the London map.</p>
+          </div>
+        </div>
+        <div class="storyboard-frame">
+          <img src="assessment 1/storyboard/微信图片_20260201002531_383_242.png" alt="Storyboard scene 03" />
+          <div class="storyboard-caption">
+            <div class="storyboard-num">Scene 03</div>
+            <p>She can also browse curated stories and discover places by the people who lived there, not just by map pin density.</p>
+          </div>
+        </div>
+        <div class="storyboard-frame">
+          <img src="assessment 1/storyboard/微信图片_20260201002533_384_242.png" alt="Storyboard scene 04" />
+          <div class="storyboard-caption">
+            <div class="storyboard-num">Scene 04</div>
+            <p>Walking through Brick Lane, Zoey follows the audio story, an immersive layered narrative that brings each site to life without stopping her movement.</p>
+          </div>
+        </div>
+        <div class="storyboard-frame">
+          <img src="assessment 1/storyboard/微信图片_20260201002534_385_242.png" alt="Storyboard scene 05" />
+          <div class="storyboard-caption">
+            <div class="storyboard-num">Scene 05</div>
+            <p>She can select a route mode (Calm Route, Sense-Friendly, Accessible, or Safety-Focused), tailoring the experience to her needs that day.</p>
+          </div>
+        </div>
+        <div class="storyboard-frame" style="background:var(--ink);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:32px 28px;">
+          <div style="font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:16px;">Key insight from storyboard</div>
+          <p style="font-family:'Bricolage Grotesque',sans-serif;font-size:1.1rem;font-weight:600;letter-spacing:-.02em;color:#fff;line-height:1.5;margin-bottom:20px;">"Narrative-first" navigation changes how people move through the city; they follow stories, not star ratings.</p>
+          <div style="font-size:.8rem;color:rgba(255,255,255,.45)">The storyboard revealed that route accessibility labelling (calm, sensory-friendly) was a feature users hadn't asked for, yet immediately responded to as essential.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Findings -->
+  <section style="position:relative;z-index:10;background:var(--cream);">
+    <div class="container">
+      <div class="section-header fade-up">
+        <div class="section-label">Key Findings</div>
+        <h2>What the research tells us</h2>
+        <p>Four actionable conclusions that directly shaped Storyweave's product direction.</p>
+      </div>
+
+      <div class="findings-grid fade-up">
+        <div class="finding-card dark">
+          <div class="finding-num">01</div>
+          <h3>People need narrative before motivation</h3>
+          <p>No participant described deciding to visit a place based on facts or ratings alone. A story (historical, personal, or mythological) was always the emotional entry point. Storyweave must lead with story, not map pins.</p>
+        </div>
+        <div class="finding-card light">
+          <div class="finding-num" style="opacity:.08">02</div>
+          <h3>Trust is earned through voice, not metrics</h3>
+          <p>Star ratings and view counts are largely ignored. Participants responded to first-person audio narration and friend recommendations because they carry a distinct human voice. Storyweave's audio content must sound like a person, not a guide book.</p>
+        </div>
+        <div class="finding-card accent">
+          <div class="finding-num">03</div>
+          <h3>Freedom + optional guidance = ideal UX</h3>
+          <p>The sweet spot isn't self-guided OR guided: it's both, switchable. Users want to roam freely but have rich narrative context available whenever they pause to look around. Our interface should never interrupt, only enhance.</p>
+        </div>
+        <div class="finding-card green">
+          <div class="finding-num">04</div>
+          <h3>The post-visit experience is completely unserved</h3>
+          <p>Every participant struggled to capture, organise, or re-share their experience after returning. There is a clear product gap for a "living memory" layer that bridges travel notes, route logs, and reflective storytelling.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <script>
+    // Scroll animation
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Nav scroll effect
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      nav.style.borderBottomColor = window.scrollY > 20 ? 'rgba(17,17,17,.12)' : 'rgba(17,17,17,.1)';
+    });
+
+    // ── Insight card stack scroll driver ──
+    (function () {
+      const wrap    = document.getElementById('insights-sticky-wrap');
+      const cards   = Array.from(document.querySelectorAll('.icard'));
+      const dots    = Array.from(document.querySelectorAll('.cdot'));
+      const counter = document.getElementById('card-current');
+      const hint    = document.querySelector('.scroll-hint-label');
+      const N = cards.length;
+
+      const behindNames = ['active','behind-1','behind-2','behind-3','behind-far','behind-far'];
+
+      let prevActive = 0;
+      const flyingCards = new Set(); // cards currently mid-animation
+
+      function getState(rel) {
+        if (rel === -1) return 'dismissed';
+        if (rel < -1)  return 'dismissed-old';
+        return behindNames[Math.min(rel, behindNames.length - 1)];
+      }
+
+      function triggerFlyAway(card) {
+        flyingCards.add(card);
+        // Do NOT change data-state yet — keep card at full opacity during animation
+        card.classList.remove('fly-away');
+        void card.offsetWidth;
+        card.classList.add('fly-away');
+        card.addEventListener('animationend', () => {
+          // Snap to dismissed instantly (no transition), then re-enable
+          card.style.transition = 'none';
+          card.classList.remove('fly-away');
+          card.dataset.state = 'dismissed';
+          void card.offsetWidth;
+          card.style.transition = '';
+          flyingCards.delete(card);
+        }, { once: true });
+      }
+
+      function update() {
+        if (!wrap) return;
+        const rect      = wrap.getBoundingClientRect();
+        const navH      = 64;
+        const viewH     = window.innerHeight - navH;
+        const scrolled  = -(rect.top - navH);
+        const maxScroll = wrap.offsetHeight - viewH;
+        const progress  = Math.max(0, Math.min(1, scrolled / maxScroll));
+
+        const activeF = progress * (N - 1);
+        const active  = Math.round(activeF);
+
+        cards.forEach((card, i) => {
+          const rel     = i - active;
+          const prevRel = i - prevActive;
+
+          if (flyingCards.has(card)) return; // let animation finish uninterrupted
+
+          if (prevRel === 0 && rel === -1 && active !== prevActive) {
+            triggerFlyAway(card);
+          } else {
+            card.classList.remove('fly-away');
+            card.dataset.state = getState(rel);
+          }
+        });
+
+        dots.forEach((d, i) => d.classList.toggle('active', i === active));
+        if (counter) counter.textContent = active + 1;
+        if (hint) hint.style.opacity = progress < 0.04 ? '0.6' : '0';
+
+        prevActive = active;
+      }
+
+      function scrollToCard(i) {
+        if (!wrap) return;
+        const navH      = 64;
+        const viewH     = window.innerHeight - navH;
+        const maxScroll = wrap.offsetHeight - viewH;
+        const target    = wrap.offsetTop - navH + (i / (N - 1)) * maxScroll;
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      }
+
+      dots.forEach((d, i) => {
+        d.style.cursor = 'pointer';
+        d.addEventListener('click', () => scrollToCard(i));
+      });
+
+      // initialise
+      cards.forEach((card, i) => {
+        card.dataset.state = getState(i);
+      });
+
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    })();
+  </script>
+</body>
+</html>

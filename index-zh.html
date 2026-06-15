@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Storyweave — 探索城市，从一个人的故事开始。</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:      #EDEADE;
+      --cream-dark: #E3DCCE;
+      --cream-card: #F5F2EA;
+      --ink:        #111111;
+      --ink-soft:   #444444;
+      --ink-faint:  #888888;
+      --white:      #FFFFFF;
+      --green:      #2F6B4A;
+      --green-light:#E8F5EE;
+      --green-pill: #3D7A5B;
+      --accent:     #B8F040;
+      --border:     rgba(17,17,17,.1);
+      --r-pill:     100px;
+      --r-card:     20px;
+      --max:        1160px;
+    }
+
+    /* ── Section Label ── */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 16px; height: 2px;
+      background: var(--green);
+      border-radius: 2px;
+    }
+
+    /* ── Persona ── */
+    .persona-wrap {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 32px;
+      align-items: stretch;
+    }
+    .persona-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .persona-card-top {
+      background: var(--ink);
+      padding: 32px 28px;
+      color: var(--white);
+    }
+    .persona-card-top h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      margin-bottom: 4px;
+    }
+    .persona-card-top .role {
+      color: var(--accent);
+      font-size: .88rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .persona-card-top .details {
+      font-size: .85rem;
+      color: rgba(255,255,255,.65);
+      line-height: 1.7;
+    }
+    .persona-card-body {
+      padding: 24px 28px;
+      flex: 1;
+    }
+    .persona-section-title {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 10px;
+      margin-top: 20px;
+    }
+    .persona-section-title:first-child { margin-top: 0; }
+    .persona-tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .persona-tag {
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: .78rem;
+      font-weight: 500;
+      background: var(--cream);
+      color: var(--ink);
+    }
+    .persona-tag.green { background: var(--green-light); color: var(--green); }
+    .persona-quote-list { display: flex; flex-direction: column; gap: 16px; }
+    .persona-quote {
+      border-left: 3px solid var(--green);
+      padding: 12px 16px;
+      background: var(--green-light);
+      border-radius: 0 10px 10px 0;
+      font-size: .875rem;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+    .persona-goals-list { list-style: none; }
+    .persona-goals-list li {
+      display: flex;
+      gap: 10px;
+      font-size: .875rem;
+      color: var(--ink-soft);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .persona-goals-list li:last-child { border-bottom: none; }
+    .persona-goals-list li::before {
+      content: '→';
+      color: var(--green);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .persona-speech-bubble { position: relative; overflow: visible !important; }
+    .persona-speech-bubble::before {
+      content: '';
+      position: absolute;
+      width: 0; height: 0;
+      top: -26px; right: 20px;
+      border-bottom: 32px solid var(--white);
+      border-left: 22px solid transparent;
+      border-right: 22px solid transparent;
+      z-index: 5;
+    }
+    .persona-speech-bubble::after { content: none; }
+    .persona-right { display: flex; flex-direction: column; gap: 20px; }
+    .persona-right-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 24px 28px;
+    }
+    .persona-right-card h4 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: 14px;
+    }
+    .persona-right-card p { font-size: .875rem; color: var(--ink-soft); line-height: 1.7; }
+    @media (max-width: 900px) {
+      .persona-wrap { grid-template-columns: 1fr; }
+    }
+
+    /* ── Section Header ── */
+    .section-header { margin-bottom: 48px; }
+    .section-header h2 {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .section-header p { color: var(--ink-soft); max-width: 580px; font-size: .95rem; }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border-radius: var(--r-card);
+      overflow: hidden;
+      margin-bottom: 56px;
+    }
+    .stat-card { background: var(--cream-card); padding: 32px 28px; }
+    .stat-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      color: var(--green);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label { font-size: .85rem; color: var(--ink-soft); }
+
+    /* ── Interviewee Grid ── */
+    .interviewee-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .interviewee-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 18px;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .interviewee-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    .interviewee-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 12px; flex-shrink: 0;
+    }
+    .interviewee-meta { font-size: .78rem; color: var(--ink-faint); line-height: 1.5; }
+    .interviewee-tag {
+      display: inline-block; margin-top: 8px;
+      padding: 2px 8px; border-radius: 100px;
+      font-size: .7rem; font-weight: 600;
+    }
+
+    /* ── Big Quote ── */
+    .big-quote-wrap {
+      background: var(--ink);
+      border-radius: var(--r-card);
+      padding: 56px 64px;
+      position: relative; overflow: hidden; margin: 56px 0;
+    }
+    .big-quote-wrap::before {
+      content: '"';
+      position: absolute; top: -20px; left: 40px;
+      font-family: 'Bricolage Grotesque', Georgia, serif;
+      font-size: 14rem; font-weight: 800;
+      color: rgba(255,255,255,.06); line-height: 1; pointer-events: none;
+    }
+    .big-quote-text {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      font-weight: 600; letter-spacing: -.02em;
+      color: var(--white); line-height: 1.45;
+      max-width: 720px; position: relative; z-index: 1; margin-bottom: 20px;
+    }
+    .big-quote-text em { color: var(--accent); font-style: normal; }
+
+    /* ── Insights scrolly ── */
+    .insights-scrolly { padding-top: 80px; }
+    .insights-scrolly .section-header { margin-bottom: 40px; }
+    .insights-sticky-wrap { height: calc(5 * 80vh); position: relative; }
+    .insights-sticky {
+      position: sticky; top: 68px;
+      height: calc(100vh - 68px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 80px; gap: 48px;
+    }
+    .insights-left-panel { flex-shrink: 0; position: relative; z-index: 30; margin-bottom: 45px; }
+    .insights-left-panel .big-quote-wrap {
+      margin: 0; width: 480px; height: 450px; padding: 32px 36px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .insights-left-panel .big-quote-text { font-size: 32px; margin-bottom: 0; }
+    .insights-right-panel { flex-shrink: 0; position: relative; display: flex; align-items: center; justify-content: center; }
+    .insights-stage { position: relative; display: flex; flex-direction: column; align-items: center; gap: 28px; }
+    .card-stack-3d { position: relative; width: 300px; height: 450px; overflow: visible; }
+    .card-stack-3d::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+      width: 100vw; top: 100%; height: 300px;
+      background: linear-gradient(to bottom, var(--cream) 60%, transparent 100%);
+      pointer-events: none; z-index: 20;
+    }
+    .icard {
+      position: absolute; inset: 0;
+      background: var(--white); border-radius: 20px;
+      padding: 28px 28px 24px; border: 1.5px solid var(--border);
+      overflow: hidden; will-change: transform, opacity;
+      transform-origin: 50% 115%;
+      transition: transform 0.65s cubic-bezier(0.32, 0.08, 0.24, 1);
+      display: flex; flex-direction: column;
+    }
+    .icard::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--cream); border-radius: 18px;
+      pointer-events: none; z-index: 50; opacity: 0;
+      transition: opacity 0.45s ease;
+    }
+    .icard-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.2rem; font-weight: 800; letter-spacing: -.03em;
+      margin-bottom: 10px; color: var(--ink); line-height: 1.2;
+    }
+    .icard-body { font-size: .82rem; color: var(--ink-soft); line-height: 1.65; margin-bottom: 16px; }
+    .icard-quotes { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+    .icard-quote {
+      background: var(--cream); border-radius: 10px; padding: 9px 12px;
+      font-size: .76rem; color: var(--ink-soft); font-style: italic; line-height: 1.5;
+    }
+    .icard[data-state="active"] { transform: rotate(0deg) scale(1); z-index: 10; }
+    .icard[data-state="active"]::before { opacity: 0; }
+    .icard[data-state="behind-1"] { transform: rotate(12deg) scale(0.97); z-index: 9; }
+    .icard[data-state="behind-1"]::before { opacity: 0; }
+    .icard[data-state="behind-2"] { transform: rotate(24deg) scale(0.94); z-index: 8; box-shadow: none; }
+    .icard[data-state="behind-2"]::before { opacity: 0.18; }
+    .icard[data-state="behind-3"] { transform: rotate(36deg) scale(0.91); z-index: 7; box-shadow: none; }
+    .icard[data-state="behind-3"]::before { opacity: 0.42; }
+    .icard[data-state="behind-far"] { transform: rotate(48deg) scale(0.88); z-index: 6; box-shadow: none; }
+    .icard[data-state="behind-far"]::before { opacity: 0.68; }
+    .icard[data-state="dismissed"] { transform: rotate(-58deg) scale(0.86); z-index: 1; box-shadow: none; pointer-events: none; }
+    .icard[data-state="dismissed"]::before { opacity: 1; }
+    .icard[data-state="dismissed-old"] { transform: rotate(-68deg) scale(0.84); z-index: 1; box-shadow: none; pointer-events: none; transition: none; }
+    .icard[data-state="dismissed-old"]::before { opacity: 1; }
+    .icard.fly-away {
+      transform-origin: 50% 100% !important; z-index: 15 !important;
+      animation: card-fan-fly 0.72s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+      transition: none !important;
+    }
+    @keyframes card-fan-fly {
+      0%   { transform: rotate(0deg);    opacity: 1; }
+      99%  { transform: rotate(-179deg); opacity: 1; }
+      100% { transform: rotate(-180deg); opacity: 0; }
+    }
+    .card-dots {
+      position: absolute; left: 32px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px; align-items: center;
+    }
+    .cdot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(17,17,17,.18);
+      transition: background .3s, transform .3s; flex-shrink: 0;
+    }
+    .cdot.active { background: var(--ink); transform: scale(1.4); }
+    .scroll-hint-label {
+      font-size: .72rem; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--ink-faint); opacity: .6;
+    }
+
+    /* ── Journey map ── */
+    .journey-image-wrap { border-radius: var(--r-card); overflow: hidden; }
+    .journey-image-wrap img { width: 100%; display: block; }
+    .journey-legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+    .journey-legend-item {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 18px 20px;
+    }
+    .journey-legend-item h4 {
+      font-size: .8rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px;
+    }
+    .journey-legend-item p { font-size: .83rem; color: var(--ink-soft); line-height: 1.6; }
+
+    /* ── Storyboard ── */
+    .storyboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .storyboard-frame {
+      border-radius: var(--r-card); overflow: hidden;
+      border: 1.5px solid var(--border); background: var(--white);
+    }
+    .storyboard-frame img { width: 100%; display: block; }
+    .storyboard-caption { padding: 14px 16px; }
+    .storyboard-num {
+      font-size: .72rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px;
+    }
+    .storyboard-caption p { font-size: .83rem; color: var(--ink-soft); }
+
+    /* ── Key Findings ── */
+    .findings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .finding-card { border-radius: var(--r-card); padding: 28px 32px; border: 1.5px solid var(--border); }
+    .finding-card.fc-accent { background: var(--accent); border-color: transparent; }
+    .finding-card.fc-dark { background: var(--ink); color: var(--white); border-color: transparent; }
+    .finding-card.fc-light { background: var(--white); }
+    .finding-card.fc-green { background: var(--green); color: var(--white); border-color: transparent; }
+    .finding-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 3.5rem; font-weight: 800; letter-spacing: -.06em;
+      line-height: 1; margin-bottom: 8px; opacity: .22;
+    }
+    .finding-card.fc-accent .finding-num { opacity: .35; color: var(--ink); }
+    .finding-card.fc-dark .finding-num,
+    .finding-card.fc-green .finding-num { color: var(--white); }
+    .finding-card h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.2rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: 10px;
+    }
+    .finding-card p { font-size: .875rem; line-height: 1.65; opacity: .8; }
+    .finding-card.fc-light p { opacity: 1; color: var(--ink-soft); }
+
+    /* ── Fade-up ── */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-up.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .interviewee-grid { grid-template-columns: repeat(2, 1fr); }
+      .journey-legend { grid-template-columns: 1fr; }
+      .storyboard-grid { grid-template-columns: 1fr 1fr; }
+      .findings-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .interviewee-grid { grid-template-columns: 1fr 1fr; }
+      .storyboard-grid { grid-template-columns: 1fr; }
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: var(--r-pill);
+      font-family: 'Inter', 'PingFang SC', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: transform .15s, opacity .15s, box-shadow .15s;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn svg { flex-shrink: 0; }
+
+    .btn-dark {
+      background: var(--ink);
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(0,0,0,.18);
+    }
+    .btn-dark:hover { box-shadow: 0 8px 28px rgba(0,0,0,.25); }
+
+    .btn-accent {
+      background: var(--accent);
+      color: var(--ink);
+      box-shadow: 0 4px 16px rgba(184,240,64,.35);
+    }
+    .btn-accent:hover { box-shadow: 0 8px 28px rgba(184,240,64,.45); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { background: rgba(17,17,17,.05); }
+
+    .btn-green {
+      background: var(--green);
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(47,107,74,.25);
+    }
+    .btn-green:hover { box-shadow: 0 8px 28px rgba(47,107,74,.35); }
+
+    .arrow {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.18);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-dark .arrow { background: rgba(255,255,255,.2); }
+    .btn-accent .arrow { background: rgba(17,17,17,.1); }
+
+    /* ── Lang switch ─────────────────────────────────────── */
+    .lang-switch {
+      display: inline-flex;
+      border-radius: var(--r-pill);
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      font-size: .8rem;
+      font-weight: 600;
+    }
+    .lang-switch a {
+      padding: 5px 12px;
+      color: var(--ink-faint);
+      transition: background .15s, color .15s;
+    }
+    .lang-switch a.active {
+      background: var(--ink);
+      color: var(--white);
+    }
+    .lang-switch a:not(.active):hover {
+      background: rgba(17,17,17,.06);
+      color: var(--ink);
+    }
+
+    /* ── Nav ─────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      padding: 0 36px;
+      background: rgba(237,234,222,.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .3s;
+    }
+    nav.scrolled { border-color: var(--border); }
+
+    .nav-logo {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      margin-right: 48px;
+    }
+    .logo-story { color: var(--ink); }
+    .logo-weave { color: var(--green); }
+
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      list-style: none;
+      flex: 1;
+    }
+    .nav-links a {
+      padding: 7px 14px;
+      border-radius: 100px;
+      font-size: .875rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      transition: background .15s, color .15s;
+    }
+    .nav-links a:hover {
+      background: rgba(17,17,17,.06);
+      color: var(--ink);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      margin-left: 8px;
+    }
+    .nav-hamburger span {
+      width: 22px; height: 2px;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+
+    /* ── Hero ────────────────────────────────────────────── */
+    #hero {
+      padding-top: 0;
+      padding-bottom: 0;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: 68px;
+    }
+
+    #hero h1 {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: clamp(2rem, 4.5vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.06;
+      letter-spacing: -.03em;
+      color: var(--ink);
+      max-width: 900px;
+      margin: 0 auto 28px;
+    }
+
+    #hero h1 em {
+      font-style: italic;
+      color: var(--green);
+    }
+
+    .hero-rating {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 36px;
+      font-size: .88rem;
+      color: var(--ink-soft);
+    }
+    .stars { color: #111; letter-spacing: 2px; font-size: 1rem; }
+    .rating-count { font-weight: 600; }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 72px;
+    }
+
+    .hero-video-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .hero-video-frame {
+      background: #1a1a1a;
+      border-radius: 16px 16px 0 0;
+      padding: 10px 10px 0;
+      box-shadow: 0 40px 100px rgba(0,0,0,.25), 0 0 0 1px rgba(255,255,255,.05);
+    }
+
+    .hero-video-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 0 10px 4px;
+    }
+
+    .hero-video-label {
+      margin-left: 10px;
+      font-size: .72rem;
+      color: rgba(255,255,255,.3);
+      font-weight: 500;
+    }
+
+    .mockup-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .mockup-dot.r { background: #ff5f57; }
+    .mockup-dot.y { background: #ffbd2e; }
+    .mockup-dot.g { background: #28c840; }
+
+    .hero-video {
+      display: block;
+      width: 100%;
+      border-radius: 8px 8px 0 0;
+      max-height: 520px;
+      object-fit: cover;
+      background: #000;
+    }
+
+    /* ── Logos / Partners ─────────────────────────────────── */
+    #partners {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .partners-label {
+      text-align: center;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 28px;
+    }
+    .partners-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .partner-logo {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--ink-faint);
+      letter-spacing: -.01em;
+      opacity: .55;
+      transition: opacity .2s;
+    }
+    .partner-logo:hover { opacity: .9; }
+
+    /* ── Section Shared ───────────────────────────────────── */
+    .section { padding: 112px 0; }
+    .section-sm { padding: 80px 0; }
+
+    h2.display {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: clamp(2.2rem, 4.5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+
+    h2.display em { font-style: italic; color: var(--green); }
+
+    p.lead {
+      font-size: 1.05rem;
+      color: var(--ink-soft);
+      line-height: 1.75;
+      max-width: 520px;
+    }
+
+    /* ── Phone Showcase ─────────────────────────────────── */
+    #showcase {
+      background: #B8F040;
+      overflow: hidden;
+      line-height: 0;
+    }
+    .showcase-img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ── Vision ──────────────────────────────────────────── */
+    #vision {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+    #vision .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .vision-stat-row {
+      display: flex;
+      gap: 40px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    .vision-stat h3 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .vision-stat p {
+      font-size: .82rem;
+      color: var(--ink-faint);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .vision-quote-block {
+      background: var(--ink);
+      color: var(--white);
+      border-radius: var(--r-card);
+      padding: 40px;
+    }
+    .vision-quote-block blockquote {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.55;
+      letter-spacing: -.01em;
+      margin-bottom: 20px;
+    }
+    .vision-quote-block cite {
+      font-size: .82rem;
+      color: rgba(255,255,255,.5);
+      font-style: normal;
+    }
+    .vision-accent-tag {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--ink);
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      margin-bottom: 16px;
+    }
+
+    /* ── Values ──────────────────────────────────────────── */
+    #values { background: var(--cream-dark); }
+
+    #values .header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 40px;
+      margin-bottom: 56px;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .value-card {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 32px 28px;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .value-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 48px rgba(0,0,0,.08);
+    }
+    .value-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: .8rem;
+      font-weight: 800;
+      color: var(--ink-faint);
+      letter-spacing: .06em;
+      margin-bottom: 16px;
+    }
+    .value-card h3 {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+    .value-card p {
+      font-size: .9rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+    }
+
+    /* ── How It Works ─────────────────────────────────────── */
+    #how .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .how-steps { margin-top: 48px; }
+
+    .how-step {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .how-step:last-child { border-bottom: 1px solid var(--border); }
+
+    .how-step-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: .82rem;
+      font-weight: 800;
+      color: var(--ink-faint);
+      padding-top: 2px;
+    }
+    .how-step.active .how-step-num { color: var(--green); }
+
+    .how-step {
+      opacity: .35;
+      transition: opacity .3s;
+    }
+    .how-step.active { opacity: 1; }
+    .how-step h3 {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -.01em;
+      color: var(--ink);
+      margin-bottom: 0;
+      transition: color .2s;
+    }
+    .how-step p {
+      display: none;
+      font-size: .88rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      margin-top: 10px;
+    }
+    .how-step.active p { display: block; }
+    .how-step.active h3 { color: var(--ink); }
+
+    .how-phone-img {
+      display: block;
+      position: sticky;
+      top: 100px;
+      max-width: 320px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ── Pilot ───────────────────────────────────────────── */
+    #pilot { background: var(--ink); color: var(--white); }
+    #pilot h2.display { color: var(--white); }
+    #pilot p.lead { color: rgba(255,255,255,.6); }
+
+    .pilot-cards {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 16px;
+      margin-top: 56px;
+    }
+
+    .pilot-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--r-card);
+      overflow: hidden;
+      transition: border-color .2s, transform .2s;
+    }
+    .pilot-card:hover {
+      border-color: rgba(184,240,64,.3);
+      transform: translateY(-4px);
+    }
+
+    .pilot-card-body { padding: 24px; }
+    .pilot-card-body h3 {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .pilot-card-body p { font-size: .875rem; color: rgba(255,255,255,.5); line-height: 1.7; }
+
+    /* ── Audience ─────────────────────────────────────────── */
+    #audience .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .audience-card {
+      background: var(--ink);
+      border-radius: var(--r-card);
+      overflow: hidden;
+      color: var(--white);
+    }
+    .audience-card-top {
+      background: var(--green);
+      padding: 32px;
+    }
+    .audience-card-top h3 {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      margin-bottom: 4px;
+    }
+    .audience-card-top p { font-size: .88rem; opacity: .8; }
+
+    .audience-card-body { padding: 28px 32px; display: flex; flex-direction: column; gap: 18px; }
+    .aud-trait { display: flex; gap: 14px; align-items: flex-start; }
+    .aud-trait-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem;
+      flex-shrink: 0;
+    }
+    .aud-trait h4 { font-size: .88rem; font-weight: 600; margin-bottom: 2px; }
+    .aud-trait p { font-size: .82rem; color: rgba(255,255,255,.5); line-height: 1.55; }
+
+    .aud-tags {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;
+    }
+    .aud-tag {
+      background: rgba(47,107,74,.15);
+      color: #6ecf99;
+      border: 1px solid rgba(47,107,74,.3);
+      padding: 5px 13px;
+      border-radius: 100px;
+      font-size: .78rem;
+      font-weight: 600;
+    }
+
+    /* ── Comparison ───────────────────────────────────────── */
+    #comparison { background: var(--cream-dark); }
+
+    .comp-table-wrap {
+      margin-top: 56px;
+      border-radius: var(--r-card);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    table.comp {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table.comp thead { background: var(--ink); color: var(--white); }
+    table.comp th {
+      padding: 18px 24px;
+      text-align: left;
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    table.comp th:first-child { width: 30%; }
+    table.comp th.sw-col {
+      background: var(--green);
+    }
+    table.comp td {
+      padding: 16px 24px;
+      font-size: .9rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      line-height: 1.5;
+      background: var(--cream);
+    }
+    table.comp tr:nth-child(even) td { background: var(--cream-dark); }
+    table.comp td.sw-col {
+      background: rgba(47,107,74,.06) !important;
+      font-weight: 600;
+      color: var(--green);
+    }
+    table.comp tr:last-child td { border-bottom: none; }
+    .c-yes { color: #2a7a4a; font-weight: 700; }
+    .c-no  { color: #b0362a; font-weight: 700; }
+    .c-partial { color: #8a6a20; font-weight: 700; }
+
+    /* ── Prototype ────────────────────────────────────────── */
+    #prototype .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .proto-card {
+      background: var(--ink);
+      border-radius: var(--r-card);
+      padding: 44px 40px;
+      color: var(--white);
+      transition: transform .2s;
+    }
+    .proto-card:hover { transform: translateY(-4px); }
+
+    .proto-card h3 {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      margin-bottom: 12px;
+    }
+    .proto-card p { font-size: .9rem; color: rgba(255,255,255,.55); line-height: 1.7; margin-bottom: 32px; }
+
+    /* ── Budget ───────────────────────────────────────────── */
+    #budget .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .budget-items { margin-top: 36px; display: flex; flex-direction: column; gap: 20px; }
+    .budget-row { display: flex; flex-direction: column; gap: 8px; }
+    .budget-row-top { display: flex; justify-content: space-between; align-items: baseline; }
+    .budget-row-label { font-size: .9rem; font-weight: 500; color: var(--ink); }
+    .budget-row-amt {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .bar-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--ink);
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 1.1s cubic-bezier(.4,0,.2,1);
+    }
+    .bar-fill.green { background: var(--green); }
+    .bar-fill.accent { background: #a0c840; }
+
+    .budget-total-card {
+      background: var(--ink);
+      border-radius: var(--r-card);
+      padding: 40px;
+      color: var(--white);
+    }
+    .budget-total-card .label { font-size: .8rem; color: rgba(255,255,255,.45); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 12px; }
+    .budget-total-card .amount {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 800;
+      letter-spacing: -.05em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .budget-total-card .sub { font-size: .85rem; color: rgba(255,255,255,.4); }
+
+    .funding-box {
+      margin-top: 16px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+      padding: 18px;
+      font-size: .85rem;
+      color: rgba(255,255,255,.55);
+      line-height: 1.65;
+    }
+    .funding-box strong { color: rgba(255,255,255,.85); }
+
+    /* ── Timeline ─────────────────────────────────────────── */
+    #timeline .inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+
+    .tl-items { margin-top: 48px; display: flex; flex-direction: column; }
+    .tl-item {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 20px;
+      padding-bottom: 40px;
+      position: relative;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .tl-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .tl-bar {
+      flex: 1;
+      width: 2px;
+      background: var(--border);
+      margin-top: 6px;
+    }
+    .tl-item:last-child .tl-bar { display: none; }
+
+    .tl-phase {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 6px;
+    }
+    .tl-item h3 {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .tl-item p { font-size: .875rem; color: var(--ink-soft); line-height: 1.7; }
+
+    .distrib-card {
+      background: var(--cream-dark);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 32px;
+      height: fit-content;
+    }
+    .distrib-card h3 {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      margin-bottom: 20px;
+    }
+    .distrib-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .distrib-item:last-child { border-bottom: none; }
+    .distrib-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+    .distrib-item h4 { font-size: .9rem; font-weight: 600; margin-bottom: 2px; }
+    .distrib-item p { font-size: .82rem; color: var(--ink-faint); }
+
+    /* ── CTA ─────────────────────────────────────────────── */
+    #cta {
+      background: var(--ink);
+      text-align: center;
+      padding: 200px 32px 120px;
+    }
+    #cta h2 {
+      font-family: 'Bricolage Grotesque', 'PingFang SC', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.06;
+      color: var(--white);
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+    #cta h2 em { font-style: italic; color: var(--accent); }
+    #cta p { font-size: 1.05rem; color: rgba(255,255,255,.55); margin-bottom: 40px; }
+    #cta .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    footer {
+      background: #0a0a0a;
+      padding: 40px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -.03em;
+    }
+    .footer-logo span { color: var(--accent); }
+    footer p { font-size: .82rem; color: rgba(255,255,255,.3); }
+    footer a { color: rgba(255,255,255,.5); transition: color .15s; }
+    footer a:hover { color: var(--white); }
+
+    /* ── Fade-in ─────────────────────────────────────────── */
+    .fade {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .fade.in { opacity: 1; transform: none; }
+
+    /* ── Slide in from sides (scroll-driven) ────────────── */
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-160px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(160px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .slide-left {
+      animation: slideInLeft linear both;
+      animation-timeline: view();
+      animation-range: entry -10% cover 40%;
+    }
+    .slide-right {
+      animation: slideInRight linear both;
+      animation-timeline: view();
+      animation-range: entry -10% cover 40%;
+    }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      #vision .inner,
+      #how .inner,
+      #audience .inner,
+      #budget .inner,
+      #timeline .inner { grid-template-columns: 1fr; gap: 48px; }
+      .values-grid { grid-template-columns: 1fr 1fr; }
+      .pilot-cards { grid-template-columns: 1fr; }
+      #prototype .inner { grid-template-columns: 1fr; }
+      .mockup-phone { display: none; }
+      #values .header { flex-direction: column; align-items: flex-start; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+
+    @media (max-width: 600px) {
+      .values-grid { grid-template-columns: 1fr; }
+      .comp-table-wrap { overflow-x: auto; }
+      table.comp { min-width: 560px; }
+      nav { padding: 0 20px; }
+      .container { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────────────────────── -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo"><span class="logo-story">Story</span><span class="logo-weave">weave</span></a>
+  <ul class="nav-links">
+    <li><a href="#vision">品牌愿景</a></li>
+    <li><a href="#how">产品流程</a></li>
+    <li><a href="#audience">用户调研</a></li>
+    <li><a href="#comparison">为什么选我们</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-switch">
+      <a href="index.html">EN</a>
+      <a href="index-zh.html" class="active">中文</a>
+    </div>
+    <a href="#cta" class="btn btn-dark" style="padding:10px 22px; font-size:.85rem;">
+      体验原型
+      <span class="arrow">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </a>
+    <div class="nav-hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-screen">
+    <div class="container">
+      <h1>探索城市<br>从<em>一个人的故事</em><span style="margin-left:0.12em">开始</span></h1>
+
+      <div class="hero-actions">
+        <a href="#cta" class="btn btn-dark">
+          体验原型
+          <span class="arrow">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+        <a href="#showcase" class="btn btn-accent">
+          了解产品
+          <span class="arrow" style="background:rgba(17,17,17,.1)">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PHONE SHOWCASE ────────────────────────────────────────── -->
+<section id="showcase">
+  <img src="../个人作品集/作品集相关图片/交互/手机界面展示.png" alt="Storyweave 手机界面展示" class="showcase-img">
+</section>
+
+<!-- ── VISION ─────────────────────────────────────────────────── -->
+<section id="vision" class="section">
+  <div class="container">
+    <div class="inner">
+      <div class="slide-left">
+        <div class="vision-quote-block">
+          <div class="vision-accent-tag">口述历史档案</div>
+          <blockquote>"遗产不仅仅是物件、地点或习俗的集合——它是通过过去的视角来理解当下的主动过程。"</blockquote>
+          <cite>— Storyweave 背后的民主化原则</cite>
+        </div>
+      </div>
+      <div class="slide-right">
+        <h2 class="display">文化遗产属于<br><em>每一个人</em></h2>
+        <p class="lead">主流遗产话语长期由机构声音主导。<br>Storyweave 打破这一格局：将边缘化、被忽视的普通人故事置于城市体验的中心。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DEMO VIDEO ─────────────────────────────────────────────── -->
+<div style="padding-bottom: 80px;">
+  <div class="container">
+    <div class="hero-video-wrap">
+      <video
+        class="hero-video"
+        src="assessment 2/4 wireframe/video/test video 3.mp4"
+        autoplay
+        loop
+        muted
+        playsinline
+        style="border-radius: 12px;"
+      ></video>
+    </div>
+  </div>
+</div>
+
+<!-- ── VALUES ─────────────────────────────────────────────────── -->
+<section id="values" class="section">
+  <div class="container">
+    <div class="header fade">
+      <div>
+        <h2 class="display">每一个故事背后的<br>六大原则</h2>
+      </div>
+    </div>
+    <div class="values-grid">
+      <div class="value-card fade">
+        <div class="value-num">01</div>
+        <h3>好奇心</h3>
+        <p>每条路线都旨在激发对脚下历史层叠的探索欲，而非提供打包好的标准答案。</p>
+      </div>
+      <div class="value-card fade">
+        <div class="value-num">02</div>
+        <h3>包容性</h3>
+        <p>移民、女性、工人阶级等常被官方遗产叙事忽视的群体声音，是我们的核心，而非点缀。</p>
+      </div>
+      <div class="value-card fade">
+        <div class="value-num">03</div>
+        <h3>无障碍</h3>
+        <p>以音频为主的设计适合视障用户。无需专用硬件——只需一部手机和耳机。</p>
+      </div>
+      <div class="value-card fade">
+        <div class="value-num">04</div>
+        <h3>愉悦感</h3>
+        <p>探索历史应该是一种享受。我们将严谨的史学研究与引人入胜的叙事和沉浸式声景相结合。</p>
+      </div>
+      <div class="value-card fade">
+        <div class="value-num">05</div>
+        <h3>安全性</h3>
+        <p>所有路线均经过安全审查。应用内指引帮助用户在陌生城区中自信导航。</p>
+      </div>
+      <div class="value-card fade">
+        <div class="value-num">06</div>
+        <h3>尊重</h3>
+        <p>我们对故事中涉及的社区，以及保存这些故事的历史学家，都给予深切的伦理关怀。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ────────────────────────────────────────────── -->
+<section id="how" class="section">
+  <div class="container">
+    <div class="inner">
+      <div>
+        <h2 class="display fade">从街头到故事的<br>五个步骤</h2>
+        <div class="how-steps fade" id="howSteps">
+          <div class="how-step active">
+            <span class="how-step-num">01</span>
+            <div>
+              <h3>在 Storyweave 地点附近打开应用</h3>
+              <p>支持 iOS 和 Android。应用自动探测附近路线，并在地图上实时显示周边触发点。</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <span class="how-step-num">02</span>
+            <div>
+              <h3>走到触发点，音频自动播放</h3>
+              <p>GPS 感知到您抵达触发点后，音频自动开始——无需手动点击。环境音效与历史声景无缝融合。</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <span class="how-step-num">03</span>
+            <div>
+              <h3>选择您的叙事分支</h3>
+              <p>在关键时刻，您可以选择跟随哪条故事线。叙事会根据您的好奇心延伸，而非沿着预设路径前进。</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <span class="how-step-num">04</span>
+            <div>
+              <h3>边走边聆听</h3>
+              <p>音频设计如同与一位亲历者的对话——而非博物馆解说词。</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <span class="how-step-num">05</span>
+            <div>
+              <h3>将您的记忆添加到地图</h3>
+              <p>分享您对某处地点的个人记忆。您的历史将成为城市活态档案的一部分供未来的漫步者发现。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fade">
+        <img
+          src="assessment 2/4 wireframe/播放.png"
+          alt="Storyweave 应用 — 播放界面"
+          class="how-phone-img"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── AUDIENCE ────────────────────────────────────────────────── -->
+<section id="audience" class="section">
+  <div class="container">
+    <div class="fade" style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:48px;">
+      <div>
+        <div class="section-label">用户画像</div>
+        <h2 class="display" style="margin-bottom:12px;">认识佐伊</h2>
+        <p class="lead">一个综合性用户画像，代表我们的核心目标受众：渴望旅行中深度、真实感与情感共鸣的叙事探索者。</p>
+      </div>
+      <img src="assessment 1/client portrait/头像.png" alt="佐伊" style="width:100px;height:100px;object-fit:cover;border-radius:10px;flex-shrink:0;margin-left:32px;margin-top:44px;" />
+    </div>
+
+    <div class="persona-wrap fade">
+      <div class="persona-card">
+        <div class="persona-card-top">
+          <h3>佐伊</h3>
+          <div class="role">叙事型探索者</div>
+          <div class="details">
+            年龄：24 岁 · 社会科学方向研究生<br>
+            城市：文化底蕴丰厚的大都市，却心向历史积淀深厚之地<br><br>
+            小红书重度用户 · Apple Podcasts 订阅者<br>
+            使用 Google Maps 与旅行 App，但常陷入决策困难
+          </div>
+        </div>
+        <div class="persona-card-body">
+          <div class="persona-section-title">目标</div>
+          <ul class="persona-goals-list">
+            <li>找到真正独特的旅行路线，而非网红打卡清单</li>
+            <li>加入可信赖的社群，获取小众且真实的旅行发现</li>
+            <li>体验一张充满故事与人情温度的地图</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="persona-right">
+        <div class="persona-right-card persona-speech-bubble">
+          <h4>她说的话</h4>
+          <div class="persona-quote-list">
+            <div class="persona-quote">"我从头到尾跟着一个社交媒体的旅行攻略走，却感觉只是在完成别人的打卡清单。一切都和预期一模一样，毫无惊喜。"</div>
+            <div class="persona-quote">"博物馆的讲解太干燥了，维基百科式的文字根本提不起我的兴趣。我真正想知道的是真正生活在这里的人，对这个地方有怎样的感受？"</div>
+          </div>
+        </div>
+        <div class="persona-right-card">
+          <h4>核心价值观</h4>
+          <div class="persona-tag-list">
+            <div class="persona-tag green">深度胜于广度</div>
+            <div class="persona-tag green">抗拒算法推送</div>
+            <div class="persona-tag green">人情胜于机构</div>
+            <div class="persona-tag green">创意化记录</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="persona-right-card">
+            <h4>她的痛点</h4>
+            <p>推荐算法总是推送同样的"打卡地"。无法分辨内容是真实分享还是广告植入。枯燥的机构解说令情感连接断裂。难以找到小众、真实的本地内容。</p>
+          </div>
+          <div class="persona-right-card">
+            <h4>她的需求</h4>
+            <p>一个故事、一段历史，或一次情感共鸣，才能真正开启她的旅程。她需要真实的第一人称叙述，以及在想要引导时随时可获取的指引，同时保有自由探索的空间。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PARTICIPANTS ───────────────────────────────────────────── -->
+<section class="section-sm">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-label">访谈对象</div>
+      <h2>10 位参与者，4 个国家</h2>
+      <p>我们招募了一个多元化群体，从年轻的国际留学生到年长的国内旅行者，涵盖了广泛的旅行动机与数字使用习惯。</p>
+    </div>
+    <div class="stats-row fade-up">
+      <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">已完成的访谈</div></div>
+      <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">地理位置分布</div></div>
+      <div class="stat-card"><div class="stat-num">46</div><div class="stat-label">年龄跨度（20–66 岁）</div></div>
+      <div class="stat-card"><div class="stat-num">11</div><div class="stat-label">探索的访谈问题</div></div>
+    </div>
+    <div class="interviewee-grid fade-up">
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#FFE4E4;color:#C44444;">P1</div>
+        <div class="interviewee-meta">22 岁 · 在英留学生（中国）</div>
+        <div class="interviewee-tag" style="background:#FFE4E4;color:#C44444;">故事探寻者</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#E8F5EE;color:#2F6B4A;">P2</div>
+        <div class="interviewee-meta">20 岁 · 在英留学生（中国）</div>
+        <div class="interviewee-tag" style="background:#E8F5EE;color:#2F6B4A;">细致规划者</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#FFF6D6;color:#B8860B;">P3</div>
+        <div class="interviewee-meta">21 岁 · 在英留学生（中国）</div>
+        <div class="interviewee-tag" style="background:#FFF6D6;color:#B8860B;">历史爱好者</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#E0EDFF;color:#2B5CC4;">P4</div>
+        <div class="interviewee-meta">22 岁 · 在美留学生（中国）</div>
+        <div class="interviewee-tag" style="background:#E0EDFF;color:#2B5CC4;">情感连接者</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#EDE0FF;color:#6B3FCB;">P5</div>
+        <div class="interviewee-meta">21 岁 · 在美留学生（中国）</div>
+        <div class="interviewee-tag" style="background:#EDE0FF;color:#6B3FCB;">随性探索者</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#FFE8D6;color:#C06030;">P6</div>
+        <div class="interviewee-meta">54 岁 · 居住于中国</div>
+        <div class="interviewee-tag" style="background:#FFE8D6;color:#C06030;">舒适型旅行者</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#E4F0E8;color:#3A6B4A;">P7</div>
+        <div class="interviewee-meta">66 岁 · 居住于中国</div>
+        <div class="interviewee-tag" style="background:#E4F0E8;color:#3A6B4A;">跟团游爱好者</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#FFE4F5;color:#C4449A;">P8</div>
+        <div class="interviewee-meta">21 岁 · 中国香港大学生</div>
+        <div class="interviewee-tag" style="background:#FFE4F5;color:#C4449A;">避人潮者</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#E0F4FF;color:#2B7EC4;">P9</div>
+        <div class="interviewee-meta">21 岁 · 在德留学生（中国）</div>
+        <div class="interviewee-tag" style="background:#E0F4FF;color:#2B7EC4;">效率优先者</div>
+      </div>
+      <div class="interviewee-card">
+        <div class="interviewee-avatar" style="background:#F0FFE4;color:#4A8030;">P10</div>
+        <div class="interviewee-meta">22 岁 · 在英留学生（中国）</div>
+        <div class="interviewee-tag" style="background:#F0FFE4;color:#4A8030;">随缘旅行者</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── INSIGHTS SCROLLY ────────────────────────────────────────── -->
+<section class="insights-scrolly" id="insights-scrolly">
+  <div class="container">
+    <div class="section-header" style="padding-bottom:0">
+      <div class="section-label">访谈发现</div>
+      <h2>6 个反复出现的主题</h2>
+      <p>在全部 10 次访谈中，六个一致的规律浮现出来，并直接影响了 Storyweave 的设计方向。</p>
+    </div>
+  </div>
+  <div class="insights-sticky-wrap" id="insights-sticky-wrap">
+    <div class="insights-sticky" id="insights-sticky">
+      <div class="insights-left-panel">
+        <div class="big-quote-wrap">
+          <div class="big-quote-text">"博物馆的讲解太干燥了，维基百科式的文字根本提不起我的兴趣。我真正想知道的是真正生活在这里的人，<em>对这个地方有怎样的感受？</em>"</div>
+        </div>
+      </div>
+      <div class="insights-right-panel">
+        <div class="insights-stage">
+          <div class="card-stack-3d" id="card-stack">
+            <div class="icard" data-index="0">
+              <h3 class="icard-title">故事驱动旅行动机</h3>
+              <p class="icard-body">几乎每位参与者都提到，他们需要一个引人入胜的叙事（历史的、神话的或个人的）才会对一个地方产生前往的动力。单纯的事实无法打动人心。</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"我需要一个故事来吸引我。没有叙事作为基础，旅行就像是走马观花，毫无意义。"</div>
+                <div class="icard-quote">"我跟着社交媒体攻略走，感觉只是在完成别人的打卡清单。我根本分不清哪些推荐是真心话，哪些是隐性广告。"</div>
+              </div>
+            </div>
+            <div class="icard" data-index="1">
+              <h3 class="icard-title">个人内容胜过算法推荐</h3>
+              <p class="icard-body">参与者对真实个人叙述的信任度远高于网红内容或算法推送的推荐。他们能感知到内容是"真诚分享"还是付费推广。</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"社交媒体已经越来越不可信了，广告太多！根本找不到深度有价值的分享。"</div>
+                <div class="icard-quote">"朋友的推荐总是比看视频更有说服力，因为我了解他们的品味，能够据此进行筛选。"</div>
+              </div>
+            </div>
+            <div class="icard" data-index="2">
+              <h3 class="icard-title">安全感是第一阻碍因素</h3>
+              <p class="icard-body">人身安全顾虑是受访者最常提及的不去某地的原因，从年轻学生到年长旅行者，几乎无一例外。</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"我害怕去可能被抢劫或扒窃的地方。安全始终是我的第一道筛选标准。"</div>
+                <div class="icard-quote">"人太多也会让我直接放弃。一旦发现所有人都去那里，我就立刻失去了兴趣。"</div>
+              </div>
+            </div>
+            <div class="icard" data-index="3">
+              <h3 class="icard-title">自由探索，叙事引导随需可得</h3>
+              <p class="icard-body">10 位参与者中有 9 位偏好自主探索而非跟团游，但他们仍然希望在需要时能获得叙事支持：音频导览、播客或故事背景，随用随取。</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"我喜欢自由探索。跟团太受限了，那样我无法和城市建立自己的连接。但在部分文化景点，我有时会希望有人来讲解。"</div>
+                <div class="icard-quote">"我有时会直接听一个关于这个地方的播客，感觉比官方语音导览有趣多了。"</div>
+              </div>
+            </div>
+            <div class="icard" data-index="4">
+              <h3 class="icard-title">记忆是实物的，也是感官的</h3>
+              <p class="icard-body">参与者用实物（门票、明信片、耳环、压花）以及感官锚点（如与某地绑定的一首歌）来唤起并重温旅行记忆。</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"我会在一座新城市里单曲循环同一首歌。后来那首歌就成了通往那个时刻和那个地方的入口。"</div>
+                <div class="icard-quote">"我什么都收集！门票、好看的收据、交通卡……做成手账贴进笔记本里。它成了我去过所有地方的实物记录。"</div>
+              </div>
+            </div>
+            <div class="icard" data-index="5">
+              <h3 class="icard-title">信息碎片化令人沮丧</h3>
+              <p class="icard-body">在多个 App 之间反复切换、在付费内容中艰难辨别、找不到本地视角或真实体验，是所有用户中最普遍的摩擦点。</p>
+              <div class="icard-quotes">
+                <div class="icard-quote">"在不同 App 之间来回切换太烦了。我希望所有内容都在一个地方，但我也不信任任何单一平台。"</div>
+                <div class="icard-quote">"不管我怎么搜索，都只能被困在信息茧房里。我能看到的永远是面向游客的内容，而不是本地人真实的感受。"</div>
+              </div>
+            </div>
+          </div>
+          <div class="scroll-hint-label">向下滚动以探索</div>
+        </div>
+      </div>
+      <div class="card-dots" id="card-dots">
+        <div class="cdot active"></div><div class="cdot"></div><div class="cdot"></div>
+        <div class="cdot"></div><div class="cdot"></div><div class="cdot"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── JOURNEY MAP ─────────────────────────────────────────────── -->
+<section class="section-sm" style="position:relative;z-index:10;background:var(--cream);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-label">用户旅程地图</div>
+      <h2>文化旅行体验的 7 个阶段</h2>
+      <p>跨越「发现 → 选择 → 探索 → 评价 → 分享 → 创作 → 回顾」七个阶段，追踪用户在文化旅行中情感起伏的全貌。</p>
+    </div>
+    <div class="fade-up">
+      <div class="journey-image-wrap">
+        <img src="网页素材/中文版 story weave client journey graph 2.png" alt="用户旅程地图" />
+      </div>
+    </div>
+    <div class="journey-legend fade-up">
+      <div class="journey-legend-item">
+        <h4>关键情感低谷</h4>
+        <p>在「探索与沉浸」阶段，因缺乏及时的本地文化背景，用户的情感投入明显下降，感到与这个地方的活态文化脱节。</p>
+      </div>
+      <div class="journey-legend-item">
+        <h4>核心痛点</h4>
+        <p>缺乏即时的旅行日记或坐标记录工具，被认为是整个旅程中最大的摩擦点：用户会遗失地点信息，无法准确回顾或分享。</p>
+      </div>
+      <div class="journey-legend-item">
+        <h4>最大机会点</h4>
+        <p>「创作」与「回顾与成长」阶段目前几乎完全空白。帮助用户整理、沉淀并再次分享旅行体验的工具，存在巨大的产品机会。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STORYBOARD ─────────────────────────────────────────────── -->
+<section class="section-sm" style="position:relative;z-index:10;background:var(--cream);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-label">故事板</div>
+      <h2>佐伊如何使用 Storyweave</h2>
+      <p>一个包含 5 个场景的叙事草图，展现完整的用户旅程——从旅行灵感的萌发，到在城市中随故事沉浸式探索。</p>
+    </div>
+    <div class="storyboard-grid fade-up">
+      <div class="storyboard-frame">
+        <img src="assessment 1/storyboard/微信图片_20260201002526_381_242.png" alt="故事板场景 01" />
+        <div class="storyboard-caption">
+          <div class="storyboard-num">场景 01</div>
+          <p>佐伊迎来她的小长假。她考虑去博物馆，但更渴望找到一个更有意义的地方。</p>
+        </div>
+      </div>
+      <div class="storyboard-frame">
+        <img src="assessment 1/storyboard/微信图片_20260201002529_382_242.png" alt="故事板场景 02" />
+        <div class="storyboard-caption">
+          <div class="storyboard-num">场景 02</div>
+          <p>她打开 Storyweave，发现了一条以叙事为核心的路线：「19 世纪伦敦职员的一天」。</p>
+        </div>
+      </div>
+      <div class="storyboard-frame">
+        <img src="assessment 1/storyboard/微信图片_20260201002531_383_242.png" alt="故事板场景 03" />
+        <div class="storyboard-caption">
+          <div class="storyboard-num">场景 03</div>
+          <p>她也可以浏览精选故事，通过曾经生活在这里的人来发现地方，而不只是依据地图上的密度。</p>
+        </div>
+      </div>
+      <div class="storyboard-frame">
+        <img src="assessment 1/storyboard/微信图片_20260201002533_384_242.png" alt="故事板场景 04" />
+        <div class="storyboard-caption">
+          <div class="storyboard-num">场景 04</div>
+          <p>在砖巷漫步时，佐伊跟随音频故事前行。沉浸式的多层叙事将每个地点变得生动，而无需驻足停下。</p>
+        </div>
+      </div>
+      <div class="storyboard-frame">
+        <img src="assessment 1/storyboard/微信图片_20260201002534_385_242.png" alt="故事板场景 05" />
+        <div class="storyboard-caption">
+          <div class="storyboard-num">场景 05</div>
+          <p>她可以选择路线模式（平静路线、感官友好、无障碍或安全优先），根据当天的状态定制专属体验。</p>
+        </div>
+      </div>
+      <div class="storyboard-frame" style="background:var(--ink);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:32px 28px;">
+        <div style="font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:16px;">故事板核心洞察</div>
+        <p style="font-family:'Bricolage Grotesque',sans-serif;font-size:1.1rem;font-weight:600;letter-spacing:-.02em;color:#fff;line-height:1.5;">"叙事优先"的导航方式改变了人们穿行城市的方式——他们跟随的是故事，而不是星级评分。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── KEY FINDINGS ────────────────────────────────────────────── -->
+<section class="section-sm" style="position:relative;z-index:10;background:var(--cream);">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="section-label">核心发现</div>
+      <h2>研究告诉我们什么</h2>
+      <p>四条可落地的结论，直接塑造了 Storyweave 的产品方向。</p>
+    </div>
+    <div class="findings-grid fade-up">
+      <div class="finding-card fc-dark">
+        <div class="finding-num">01</div>
+        <h3>叙事先于动机而存在</h3>
+        <p>没有参与者表示他们会仅凭事实或评分决定前往某地。故事（历史的、个人的或神话的）始终是情感的入口。Storyweave 必须以故事为先，而非地图标记。</p>
+      </div>
+      <div class="finding-card fc-light">
+        <div class="finding-num" style="opacity:.08">02</div>
+        <h3>信任来自声音，而非指标</h3>
+        <p>星级评分和浏览量在很大程度上被忽视。参与者更愿意相信第一人称音频叙述和朋友推荐，因为它们承载着独特的人声温度。Storyweave 的音频内容必须听起来像一个真实的人，而非导览手册。</p>
+      </div>
+      <div class="finding-card fc-accent">
+        <div class="finding-num">03</div>
+        <h3>自由 + 可选引导 = 理想体验</h3>
+        <p>最优解不是「自由探索」或「专人引导」二选一，而是两者兼备、可随时切换。用户希望自由漫游，同时在任何想驻足环顾的时刻都能获取丰富的叙事背景。</p>
+      </div>
+      <div class="finding-card fc-green">
+        <div class="finding-num">04</div>
+        <h3>旅行后的体验完全被忽视</h3>
+        <p>每位参与者都在旅行结束后面临记录、整理或再分享的困境。在旅行笔记、路线日志与反思性叙事之间，存在活态记忆层的产品空白。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPARISON ─────────────────────────────────────────────── -->
+<section id="comparison" class="section-sm">
+  <div class="container">
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:40px; flex-wrap:wrap; margin-bottom:0;">
+      <h2 class="display fade" style="max-width:560px;">一种不同的<br>语音导览</h2>
+    </div>
+    <div class="comp-table-wrap fade">
+      <table class="comp">
+        <thead>
+          <tr>
+            <th>功能</th>
+            <th>VoiceMap</th>
+            <th>SmartGuide</th>
+            <th class="sw-col">Storyweave</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GPS 触发音频</td>
+            <td class="c-yes">✓ 支持</td>
+            <td class="c-yes">✓ 支持</td>
+            <td class="sw-col c-yes">✓ 支持</td>
+          </tr>
+          <tr>
+            <td>分支 / 非线性叙事</td>
+            <td class="c-no">✗ 不支持</td>
+            <td class="c-no">✗ 不支持</td>
+            <td class="sw-col c-yes">✓ 核心功能</td>
+          </tr>
+          <tr>
+            <td>社区共创故事</td>
+            <td class="c-no">✗ 不支持</td>
+            <td class="c-no">✗ 不支持</td>
+            <td class="sw-col c-yes">✓ 共创模式</td>
+          </tr>
+          <tr>
+            <td>口述历史档案整合</td>
+            <td class="c-no">✗ 不支持</td>
+            <td class="c-no">✗ 不支持</td>
+            <td class="sw-col c-yes">✓ 国家生活故事档案馆</td>
+          </tr>
+          <tr>
+            <td>边缘化 / 多元声音</td>
+            <td class="c-partial">~ 参差不齐</td>
+            <td class="c-partial">~ 机构主导</td>
+            <td class="sw-col c-yes">✓ 核心使命</td>
+          </tr>
+          <tr>
+            <td>依赖 AR / VR</td>
+            <td class="c-no">✗ 无</td>
+            <td class="c-partial">~ 可选</td>
+            <td class="sw-col c-yes">✓ 纯音频设计</td>
+          </tr>
+          <tr>
+            <td>用户免费模式</td>
+            <td class="c-partial">~ 免费增值</td>
+            <td class="c-no">✗ 仅 B2B</td>
+            <td class="sw-col c-yes">✓ 资助与合作</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── CTA ────────────────────────────────────────────────────── -->
+<section id="cta">
+  <div class="fade">
+    <h2>准备好踏入<br><em>历史</em>了吗？</h2>
+    <p>体验原型或试玩试播集。无需下载安装。</p>
+    <div class="actions">
+      <a href="https://www.figma.com/proto/ulMkyR0AMd0v9aXTjkv85S/Story-weave?page-id=0%3A1&node-id=1-2&p=f&viewport=183%2C130%2C0.14&t=xqYff9REK8HpuyFs-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=1%3A2&hotspot-hints=0" target="_blank" rel="noopener" class="btn btn-accent">
+        体验 Figma 原型
+        <span class="arrow" style="background:rgba(17,17,17,.1)">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
+      <a href="https://zhitian-h.itch.io/whose-brick-lane-a-london-story" target="_blank" rel="noopener" class="btn btn-outline" style="color:#fff; border-color:rgba(255,255,255,.2)">
+        在 Itch.io 上体验
+        <span class="arrow" style="background:rgba(255,255,255,.1)">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+
+<!-- ── JS ────────────────────────────────────────────────────── -->
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 48);
+  });
+
+  document.getElementById('hamburger').addEventListener('click', () => {
+    navbar.classList.toggle('open');
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => navbar.classList.remove('open'));
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade').forEach(el => io.observe(el));
+
+  const budgetIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.bar-fill').forEach(bar => {
+          bar.style.transform = `scaleX(${bar.dataset.w})`;
+        });
+        budgetIO.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  const bb = document.getElementById('budgetBars');
+  if (bb) budgetIO.observe(bb);
+
+  const steps = document.querySelectorAll('.how-step');
+  steps.forEach((step) => {
+    step.addEventListener('click', () => {
+      steps.forEach(s => s.classList.remove('active'));
+      step.classList.add('active');
+    });
+  });
+
+  // Fade-up observer for research sections
+  const fuObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); fuObserver.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => fuObserver.observe(el));
+
+  // Insight card stack scroll driver
+  (function () {
+    const wrap  = document.getElementById('insights-sticky-wrap');
+    const cards = Array.from(document.querySelectorAll('.icard'));
+    const dots  = Array.from(document.querySelectorAll('.cdot'));
+    const hint  = document.querySelector('.scroll-hint-label');
+    const N = cards.length;
+    const behindNames = ['active','behind-1','behind-2','behind-3','behind-far','behind-far'];
+    let prevActive = 0;
+    const flyingCards = new Set();
+
+    function getState(rel) {
+      if (rel === -1) return 'dismissed';
+      if (rel < -1)  return 'dismissed-old';
+      return behindNames[Math.min(rel, behindNames.length - 1)];
+    }
+    function triggerFlyAway(card) {
+      flyingCards.add(card);
+      card.classList.remove('fly-away');
+      void card.offsetWidth;
+      card.classList.add('fly-away');
+      card.addEventListener('animationend', () => {
+        card.style.transition = 'none';
+        card.classList.remove('fly-away');
+        card.dataset.state = 'dismissed';
+        void card.offsetWidth;
+        card.style.transition = '';
+        flyingCards.delete(card);
+      }, { once: true });
+    }
+    function update() {
+      if (!wrap) return;
+      const rect      = wrap.getBoundingClientRect();
+      const navH      = 68;
+      const viewH     = window.innerHeight - navH;
+      const scrolled  = -(rect.top - navH);
+      const maxScroll = wrap.offsetHeight - viewH;
+      const progress  = Math.max(0, Math.min(1, scrolled / maxScroll));
+      const active    = Math.round(progress * (N - 1));
+      cards.forEach((card, i) => {
+        const rel = i - active, prevRel = i - prevActive;
+        if (flyingCards.has(card)) return;
+        if (prevRel === 0 && rel === -1 && active !== prevActive) triggerFlyAway(card);
+        else { card.classList.remove('fly-away'); card.dataset.state = getState(rel); }
+      });
+      dots.forEach((d, i) => d.classList.toggle('active', i === active));
+      if (hint) hint.style.opacity = progress < 0.04 ? '0.6' : '0';
+      prevActive = active;
+    }
+    function scrollToCard(i) {
+      if (!wrap) return;
+      const navH = 68, viewH = window.innerHeight - navH;
+      const maxScroll = wrap.offsetHeight - viewH;
+      window.scrollTo({ top: wrap.offsetTop - navH + (i / (N - 1)) * maxScroll, behavior: 'smooth' });
+    }
+    dots.forEach((d, i) => { d.style.cursor = 'pointer'; d.addEventListener('click', () => scrollToCard(i)); });
+    cards.forEach((card, i) => { card.dataset.state = getState(i); });
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  })();
+
+  const showcaseImg = document.querySelector('.showcase-img');
+  if (showcaseImg) {
+    const images = [
+      '../个人作品集/作品集相关图片/交互/手机界面展示.png',
+      '网页素材/hover 手机界面展示 1.png',
+      '网页素材/hover 手机界面展示 2.png',
+      '网页素材/hover 手机界面展示 3.png'
+    ];
+    images.slice(1).forEach(src => { const i = new Image(); i.src = src; });
+    let cycleTimer = null;
+    let idx = 0;
+    showcaseImg.addEventListener('mouseenter', () => {
+      idx = 1;
+      showcaseImg.src = images[idx];
+      cycleTimer = setInterval(() => {
+        idx = (idx + 1) % images.length;
+        showcaseImg.src = images[idx];
+      }, 600);
+    });
+    showcaseImg.addEventListener('mouseleave', () => {
+      clearInterval(cycleTimer);
+      cycleTimer = null;
+    });
+  }
+</script>
+</body>
+</html>
