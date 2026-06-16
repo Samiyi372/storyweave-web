@@ -944,6 +944,7 @@
       opacity: 0;
       transition: opacity 0.45s ease;
     }
+    .icard.snap, .icard.snap::before { transition: none !important; }
 
     .icard-title {
       font-family: 'Bricolage Grotesque', sans-serif;
@@ -1069,6 +1070,21 @@
       text-transform: uppercase;
       color: var(--ink-faint);
       opacity: .6;
+    }
+    @media (max-width: 900px) {
+      .insights-sticky { flex-direction: column; height: auto; min-height: calc(100vh - 64px); padding: 32px 20px 56px; gap: 24px; }
+      .insights-left-panel { width: 100%; margin-bottom: 0; }
+      .insights-left-panel .big-quote-wrap { width: 100%; height: auto; padding: 28px 24px; }
+      .insights-left-panel .big-quote-text { font-size: 22px; }
+      .insights-right-panel { width: 100%; }
+      .card-stack-3d { width: min(280px, 78vw); height: 380px; }
+      .card-dots { position: static; left: auto; top: auto; transform: none; flex-direction: row; margin-top: 16px; }
+    }
+    @media (max-width: 600px) {
+      .card-stack-3d { width: min(260px, 82vw); height: 360px; }
+      .icard { padding: 22px 20px 18px; }
+      .icard-title { font-size: 1.05rem; }
+      .icard-body { font-size: .78rem; }
     }
 
     /* ── Scroll animation ── */
@@ -1545,11 +1561,11 @@
         void card.offsetWidth;
         card.classList.add('fly-away');
         card.addEventListener('animationend', () => {
-          card.style.transition = 'none';
-          card.classList.remove('fly-away');
+          card.classList.add('snap');
           card.dataset.state = 'dismissed';
+          card.classList.remove('fly-away');
           void card.offsetWidth;
-          card.style.transition = '';
+          card.classList.remove('snap');
           flyingCards.delete(card);
         }, { once: true });
       }
